@@ -1,0 +1,316 @@
+%%%%%%%%%%%%%%%%%
+%% This is The CV texmplate created using nextcv.cls, 
+%%    and the upgraded version of the sample.tex file provided by the original author.
+%% Written by LianTze Lim, Naveen Dharmathunga
+%% ================================================================================
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2003/12/01 or later.
+%%%%%%%%%%%%%%%%
+
+% Set PDF/A standard
+%\DocumentMetadata{pdfstandard=A-2b, pdfversion=1.7, lang=en}
+%% Use the "normalphoto" option if you want a normal photo instead of cropped to a circle
+% \documentclass[10pt,a4paper,normalphoto]{nextcv}
+\documentclass[10pt,a4paper,ragged2e,withhyper]{nextcv}
+%% NextCV uses the fontawesome5 and packages.
+%% See http://texdoc.net/pkg/fontawesome5 for full list of symbols.
+
+% Change the page layout if you need to
+\geometry{left=1.25cm,right=1.25cm,top=1.5cm,bottom=1.5cm,columnsep=1.2cm}
+
+% The paracol package lets you typeset columns of text in parallel
+\usepackage{paracol}
+
+% Change the colours if you want to
+\definecolor{SlateGrey}{HTML}{2E2E2E}
+\definecolor{LightGrey}{HTML}{666666}
+\definecolor{AstrosNavy}{HTML}{002D62}
+\definecolor{EvertonBlue}{HTML}{003399}
+\definecolor{Cerulean}{HTML}{2A52BE}
+\definecolor{DodgerBlue}{HTML}{1E90FF}
+\definecolor{UranianBlue}{HTML}{AFDBF5}
+
+\colorlet{name}{black}
+\colorlet{tagline}{EvertonBlue}
+\colorlet{heading}{AstrosNavy}
+\colorlet{headingrule}{UranianBlue}
+\colorlet{subheading}{Cerulean}
+\colorlet{accent}{EvertonBlue}
+\colorlet{emphasis}{SlateGrey}
+\colorlet{link}{DodgerBlue}
+\colorlet{body}{LightGrey}
+
+% Change some fonts, if necessary
+\renewcommand{\namefont}{\Huge\rmfamily\bfseries}
+\renewcommand{\personalinfofont}{\footnotesize}
+\renewcommand{\cvsectionfont}{\LARGE\rmfamily\bfseries}
+\renewcommand{\cvsubsectionfont}{\large\bfseries}
+
+
+% Change the bullets for itemize and rating marker
+% for \cvskill if you want to
+\renewcommand{\cvItemMarker}{{\small\textbullet}}
+% \renewcommand{\cvRatingMarker}{\faIcon{circle}}
+% ...and the markers for the date/location for \cvevent
+% \renewcommand{\cvDateMarker}{\faCalendar*[regular]}
+% \renewcommand{\cvLocationMarker}{\faMapMarker*}
+
+% Personal Information
+\name{Your Name Here}
+\jobtitle{Your Position or Tagline Here}
+\email{your_name@email.com}
+\phone{000-00-0000}
+% These are optional and you can remove them
+\homepage{www.homepage.com}
+\linkedin{your_id}
+\github{your_id}
+\medium{@medium_handle}
+\twitter{xhandle}
+%% Or you can declare your own field with
+%% \NewInfoFiled{fieldname}{symbol}[optional hyperlink prefix] and use it:
+% \NewInfoField{gitlab}{\faGitlab}[https://gitlab.com/]
+% \gitlab{your_id}
+
+\begin{document}
+%% ChkTeX will complain about wrong length of dashes. You can ignore it. or use {-} instead of -.
+%% https://tex.stackexchange.com/a/687676
+
+%% You can add multiple photos on the left or right
+\photo{2.8cm}{Globe_High}
+
+\makecvheader
+%% Depending on your tastes, you may want to make fonts of itemize environments slightly smaller
+% \AtBeginEnvironment{itemize}{\small}
+
+%% Set the left/right column width ratio to 6:4.
+\columnratio{0.6}
+
+% Start a 2-column paracol. Both the left and right columns will automatically
+% break across pages if things get too long.
+\begin{paracol}{2}
+\cvsection{Experience}
+
+\cvevent{Job Title 1}{Company}{Month 20XX --- Ongoing}{Location}
+\cvsubproject{Your Project}{Your Role}{}{%
+  \begin{itemize}%
+  \item Project description 1
+  \item Project description 2
+  \end{itemize}%
+}{C\#, {.NET}, SQLite}%
+
+\cvsectionspace%
+
+
+\cvsection{Education}
+
+\cvevent{Ph.D.\ in Your Discipline}{Your University}{Sept 2002 --- June 2006}{Location}
+Thesis title: Wonderful Research
+
+\divider%
+
+\cvevent{M.Sc.\ in Your Discipline}{Your University}{Sept 2001 --- June 2002}{Location}
+
+\divider%
+
+\cvevent{B.Sc.\ in Your Discipline}{Stanford University}{Sept 1998 --- June 2001}{Location}
+Final Year Project: \textit{(Group Project)}\\
+\begin{itemize}
+\item \textbf{Title:} \textit{Project Title}
+\item \textbf{Role:} \textit{Your role}
+\item \textbf{Grade:} \textit{A+}
+\end{itemize}
+
+\cvsectionspace%
+
+% use ONLY \newpage if you want to force a page break for
+% ONLY the current column
+\newpage
+
+\cvsection{Projects}
+
+\cvproject{Name 1, Customer experience optimizer and sales management system}
+{Your Role}{https://github.com/you/your-repository}{%
+  \begin{itemize}%
+    \item Project description 1
+    \item Project description 2
+  \end{itemize}%
+}{ASP.NET, Vue.js, Node.js, MS SQL}%
+
+\divider%
+
+\cvproject{Name 2, Project title in descriptive format}
+{}{https://github.com/you/your-repository}{%
+  \begin{itemize}%
+    \item Project description 1
+    \item Project description 2
+  \end{itemize}%
+}{Java, React.js}%
+
+\cvsectionspace%
+
+
+\cvsection{Open-Source Contributions}
+
+\cvproject{Name1, Project title in descriptive format}
+{}{https://github.com/you/your-repository}{%
+  \begin{itemize}%
+    \item Project description 1
+    \item Project description 2
+  \end{itemize}%
+}{Java, React.js}%
+
+\divider%
+
+\cvproject{Name2, Project title in descriptive format}
+{}{https://github.com/you/your-repository}{%
+  \begin{itemize}%
+    \item Project description 1
+    \item Project description 2
+  \end{itemize}%
+}{Java, React.js}%
+
+%%% ==============================================================================================================
+%% Switch to the right column. This will now automatically move to the second
+%% page if the content is too long.
+\switchcolumn%
+
+\cvsection{Career Objective}
+
+A brief statement (2--3 sentences) highlighting your key qualifications, experience, and career goals.
+
+\cvsectionspace%
+
+
+\cvsection{Skills}
+
+\cvtagheader{Cloud Technologies}
+\cvskill{Azure}{4.5} %% Supports X.5 values.
+\cvtag{Virtual Machines}
+\cvtag{Azure DevOps}\\
+\cvtag{Azure Cosmos DB}
+
+\bigskip%
+
+\cvskill{AWS}{3} %% Supports X.5 values.
+\cvtag{EC2}
+\cvtag{RDS}
+
+\bigskip%
+
+\cvskill{GCP}{4} %% Supports X.5 values.
+\cvtag{BigQuery}
+\cvtag{Dataproc}
+\cvtag{Databrics}
+
+\divider\smallskip%
+
+\cvtagheader{Languages}
+\cvtag{Python}
+\cvtag{C\#}
+\cvtag{SQL}
+\cvtag{Java}\\
+\cvtag{Javascript}
+\cvtag{C++}
+
+\divider\smallskip
+
+\cvtagheader{Frameworks \& Libraries}
+\cvtag{Apache Spark}
+\cvtag{Pandas}
+\cvtag{NumPy}\\
+\cvtag{.NET}
+\cvtag{ASP.NET}
+\cvtag{Entity Framework}\\
+\cvtag{Microsoft Community Toolkit}
+\cvtag{WinUI}\\
+\cvtag{Spring-boot}
+\cvtag{Vue.js}
+\cvtag{Unity}
+
+\divider\smallskip
+
+% ONLY the current column
+% \newpage
+
+\cvtagheader{Databases}
+\cvtag{PostgreSQL}
+\cvtag{MySQL}\\
+\cvtag{MS SQL Server}
+
+\divider\smallskip
+
+\cvtagheader{Big Data Technologies}
+\cvtag{Databricks}
+\cvtag{Hive}
+\cvtag{Airflow}
+
+\divider\smallskip
+
+\cvtagheader{VCS}
+\cvtag{Git}
+\cvtag{GitHub}
+\cvtag{Bitbucket}\\
+\cvtag{Azure DevOps}
+
+\divider\smallskip
+
+\cvtagheader{Tools}
+\cvtag{Jupyter Notebooks}
+\cvtag{PyCharm}\\
+\cvtag{Visual Studio \& Code}
+\cvtag{Docker}
+\cvtag{Jira}
+\cvtag{Confluence}
+
+\cvsectionspace%
+
+
+\cvsection{Certifications}
+
+\cvcert{Certificate 1}{https://certificate/link/1}{Issuing Organization}
+
+\medskip%
+
+\cvcert{Certificate 2}{https://certificate/link/2}{Issuing Organization}
+
+\cvsectionspace%
+
+
+\cvsection{Archivements}
+
+\cvachievement{\textbf{\faIcon{trophy}}}{Fantastic Achievement}{and some details about it}
+
+\divider%
+
+\cvachievement{\textbf{\faIcon{heart-pulse}}}{Another achievement}{more details about it of course}
+
+\divider%
+
+\cvachievement{\textbf{\faIcon{heart-pulse}}}{Another achievement}{more details about it of course}
+
+
+%% Yeah I didn't spend too much time making all the
+%% spacing consistent... sorry. Use \smallskip, \medskip,
+%% \bigskip, \vspace etc to make adjustments.
+\cvsectionspace%
+
+
+\cvsection{Referees}
+
+\cvref{Prof.\ Alpha Beta}{Role}{Institute}{a.beta@university.edu}
+{Address Line 1\\Address line 2}
+
+\divider%
+
+\cvref{Prof.\ Gamma Delta}{Role}{Institute}{g.delta@university.edu}
+{Address Line 1\\Address line 2}
+
+
+\end{paracol}
+
+
+\end{document}
