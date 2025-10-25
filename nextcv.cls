@@ -45,7 +45,7 @@
 
 % Load required packages
 \RequirePackage{fontspec}
-\RequirePackage{svg}
+\RequirePackage[inkscapelatex=false]{svg}
 
 % Change the font if you want to, depending on whether you're using xelatex/lualatex
 % Here we set Aptos (the default Microsoft font) as the main font for the Next Resume theme
@@ -104,9 +104,10 @@
 \RequirePackage{dashrule}
 \RequirePackage{multirow,tabularx}
 \RequirePackage{graphicx}
-\RequirePackage{adjustbox}
+\RequirePackage[export]{adjustbox}
 \RequirePackage{listofitems} % String splitter
 \RequirePackage{array}
+\RequirePackage{tabularray} % For better tables
 
 %% ============= Personal Info Data Structure (Lua Implementation) =============
 
@@ -197,12 +198,8 @@ next_personal_info = TokenGrid:new("\\resume@hidefieldnamesvalue", "\\resume@wit
   \hypersetup{
     pdfauthor={\@name},
     pdftitle={\@jobtitle},
-    pdfsubject={Resume of \@name},
-    pdfkeywords={Resume, CV, \@jobtitle, \@name},
-    pdfcontactemail={\@email},
-    pdfcontactphone={\@phone},
-    pdflicenseurl={https://creativecommons.org/licenses/by/4.0/},
-    pdfcopyright={Copyright \textcopyright{} \the\year{} \@name. All rights reserved.},
+    pdfsubject={Resume~of~\@name},
+    pdfkeywords={Resume,~CV,~\@jobtitle,~\@name}
   }
   
   % Define the print fields command

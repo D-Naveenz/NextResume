@@ -43,18 +43,18 @@ local function get_latex_field_string(self, field_name, text, hyperlink)
   local text_part
   if hyperlink and hyperlink ~= "" then
     if self.hyperlinkEnabled then
-      text_part = string.format("\\href{%s}{\\detokenize{%s}}", hyperlink, text)
+      text_part = string.format([[\href{%s}{\detokenize{%s}}]], hyperlink, text)
     else
       texio.write_nl("Warning: Hyperlinks disabled but hyperlink provided. Use [withhyper] option.")
-      text_part = string.format("\\detokenize{%s}", text)
+      text_part = string.format([[\detokenize{%s}]], text)
     end
   else
-    text_part = string.format("\\detokenize{%s}", text)
+    text_part = string.format([[\detokenize{%s}]], text)
   end
 
   -- Combine all parts efficiently
   return string.format(
-    "\\mbox{\\textcolor{accent}{%s}~\\hspace{0.3em}%s\\hspace{2em}}",
+    [[\begin{tblr}{stretch = 0, colspec = {Q[h,l]l}, colsep=0.4em} %s & %s \end{tblr}]],
     symbol_part, text_part
   )
 end
@@ -81,11 +81,11 @@ function TokenGrid:create_info_field(field_name, symbol, mode, hyperlink_prefix)
 
   -- Create the LaTeX command
   local lua_func_name = field_name .. "_handler"
-  
+
   -- Store the function in the global namespace
   _G[lua_func_name] = function()
     local text = token.scan_string()
-    
+
     -- Determine hyperlink based on mode
     local hyperlink = ""
     if mode == "prefix" then
@@ -99,7 +99,7 @@ function TokenGrid:create_info_field(field_name, symbol, mode, hyperlink_prefix)
       hyperlink = text
     end
     -- For "noprefix" mode, hyperlink remains empty
-    
+
     -- Add the formatted field to our collection
     table.insert(self.fields, get_latex_field_string(self, field_name, text, hyperlink))
   end
@@ -117,15 +117,20 @@ function TokenGrid:build_grid(num_columns)
   end
 
   local result = {}
-  table.insert(result, "\\begin{tabular}{" .. string.rep("l", num_columns) .. "}")
-  table.insert(result, " ")
+-- \noindent: Prevents indentation at the start of the table.
+-- \begin{tabular*}{\columnwidth}{...}: Creates a table stretched to the full column width.
+-- - \columnwidth: Specifies the table width to match the column's width.
+-- - @{\extracolsep{\stretch{1}}}: Adds flexible space between columns to evenly distribute content across the full width.
+-- - *{7}{r}: Defines 7 right-aligned columns (first for row labels, remaining 6 for data).
+-- - @{}: Removes default padding at the table's edges. 
+  table.insert(result, [[\noindent\begin{tabular*}{\columnwidth}{@{\extracolsep{\stretch{1}}}*{]] .. num_columns .. [[}{l}@{}} ]])
 
   for i, field in ipairs(self.fields) do
     table.insert(result, field)
-    
+
     if i < #self.fields then
       if i % num_columns == 0 then
-        table.insert(result, " \\\\ ")
+        table.insert(result, [[ \\ ]])
       else
         table.insert(result, " & ")
       end
@@ -134,10 +139,10 @@ function TokenGrid:build_grid(num_columns)
 
   -- Close the last row if needed
   if #self.fields % num_columns ~= 0 then
-    table.insert(result, " \\\\ ")
+    table.insert(result, [[ \\ ]])
   end
-  
-  table.insert(result, "\\end{tabular}")
+
+  table.insert(result, [[\end{tabular*}]])
   tex.sprint(table.concat(result))
 end
 
