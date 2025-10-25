@@ -26,22 +26,79 @@
 %% Load hyperref for clickable hyperlinks
 \bool_new:N \g_withhyper_bool
 \DeclareOption{withhyper}{\bool_gset_true:N \g_withhyper_bool}
+
+%% Hide field names in TokenGrid (show only icons)
+\bool_new:N \g_hidefieldnames_bool
+\DeclareOption{hidefieldnames}{\bool_gset_true:N \g_hidefieldnames_bool}
+
 \ProcessOptions\relax
 
 \LoadClass{article}
 
-% Load the Next Theme Package
-\RequirePackage{nexttheme}
-
-%% file more 'friendly' with copy-paste etc
+%% Make files more 'friendly' with copy-paste etc
 \RequirePackage{xcolor,accsupp,xparse,hyperref,hyperxmp,setspace}
 \RequirePackage[margin=2cm]{geometry}
 
 \bool_if:NT \g_raggedtwoe_bool {\RequirePackage[newcommands]{ragged2e}}
 
-\bool_if:NT \g_withhyper_bool {
-  \AtEndPreamble{\hypersetup{colorlinks=true, linkcolor=link, urlcolor=link}}
-}
+% Load required packages
+\RequirePackage{fontspec}
+\RequirePackage{svg}
+% Use standard fontawesome5 for now instead of custom implementation
+\RequirePackage{fontawesome5}
+
+% Change the font if you want to, depending on whether you're using xelatex/lualatex
+% Here we set Aptos (the default Microsoft font) as the main font for the Next Resume theme
+\setmainfont{Aptos}[
+  Path           =./fonts/Aptos/,
+  Extension      =.ttf,
+  UprightFont    =*,
+  ItalicFont     =*-Italic,
+  BoldFont       =*-Bold,
+  BoldItalicFont =*-Bold-Italic,
+]
+
+\newfontfamily\headerfont{Montserrat}[
+  Path           =./fonts/Montserrat/static/,
+  Extension      =.ttf,
+  UprightFont    =*-Regular,
+  ItalicFont     =*-Italic,
+  BoldFont       =*-Bold,
+  BoldItalicFont =*-BoldItalic,
+]
+
+% Define the default color scheme
+\colorlet{accent}{blue!70!black}
+\colorlet{emphasis}{black}
+\colorlet{heading}{black}
+\colorlet{headingrule}{black}
+\colorlet{subheading}{emphasis}
+\colorlet{body}{black!80!white}
+\colorlet{name}{heading}
+\colorlet{tagline}{accent}
+\colorlet{link}{blue}
+
+% Define styles for markers
+\newcommand{\nextItemMarker}{{\small\textbullet}}
+\newcommand{\nextRatingMarker}{\faIcon{circle}}
+\newcommand{\nextDateMarker}{\faIcon{calendar}}
+\newcommand{\nextLocationMarker}{\textbf{\faIcon{map-marker-alt}}}
+\newcommand{\nextCertificateMarker}{\textbf{\faIcon{certificate}}}
+\newcommand{\nextProjectLinkMarker}{\faIcon[brands]{github}}
+\newcommand{\nextProjectRoleMarker}{\textbf{\faIcon{user}}}
+\newcommand{\nextProjectMarker}{\textbf{\faIcon{folder}}}
+
+% Define text styles
+\newcommand{\nextNameStyle}[1]{{\Huge\bfseries\color{name}#1}}%
+\newcommand{\nextTaglineStyle}[1]{{\large\itshape\color{tagline}#1}}%
+\newcommand{\nextPersonalInfoStyle}[1]{{\footnotesize\bfseries#1}}%
+\newcommand{\nextHeadingStyle}[1]{{\LARGE\bfseries\color{heading}#1}}%
+\newcommand{\nextSubheadingStyle}[1]{{\Large\bfseries\color{heading}#1}}%
+
+% Customize itemize and enumerate environments
+\RequirePackage[inline]{enumitem}
+\setlist{leftmargin=*,labelsep=0.5em,nosep,itemsep=0.25\baselineskip,after=\vspace{0.25\baselineskip}}
+\setlist[itemize]{label=\nextItemMarker}
 
 \RequirePackage{tikz}
 \RequirePackage{dashrule}
@@ -52,67 +109,139 @@
 \RequirePackage{array}
 
 %% ============= Personal Info Data Structure (Lua Implementation) =============
+% Load Lua support
 \RequirePackage{luacode}
 
-% Load the Lua module and create an instance for personal info management
-\directlua{
-  local TokenGrid = require('next_tokengrid')
-  next_personal_info = TokenGrid:new(true, \bool_if:NTF \g_withhyper_bool {true}{false})
+\begin{luacode*}
+-- Safe require function
+local function safe_require(modname)
+    local ok, result = pcall(require, modname)
+    if ok then
+        return result
+    else
+        texio.write_nl("Warning: Could not load " .. modname .. ".lua - " .. result)
+        return nil
+    end
+end
+
+TokenGrid = safe_require("next_tokengrid")
+if TokenGrid then
+    -- Initialize global token grid with class options
+    next_personal_info = TokenGrid:new(
+        \bool_if:NT \g_hidefieldnames_bool { true } \bool_if:NF \g_hidefieldnames_bool { false },
+        \bool_if:NT \g_withhyper_bool { true } \bool_if:NF \g_withhyper_bool { false }
+    )
+else
+    -- Fallback: create a dummy TokenGrid
+    next_personal_info = {
+        fieldDefinitions = {},
+        fields = {},
+        hideFieldNames = \bool_if:NT \g_hidefieldnames_bool { true } \bool_if:NF \g_hidefieldnames_bool { false },
+        hyperlinkEnabled = \bool_if:NT \g_withhyper_bool { true } \bool_if:NF \g_withhyper_bool { false },
+        create_info_field = function(self, field_name, symbol, mode, hyperlink_prefix)
+            self.fieldDefinitions[field_name] = {
+                symbol = symbol,
+                mode = mode,
+                hyperlinkPrefix = hyperlink_prefix or ""
+            }
+            tex.sprint("\\newcommand{\\" .. field_name .. "}[1]{}")
+        end,
+        build_grid = function(self, num_columns)
+            tex.sprint("")
+        end,
+        clear_fields = function(self)
+            self.fields = {}
+        end
+    }
+end
+\end{luacode*}
+
+% This command is a higher-level utility for defining new fields (e.g., email, phone) with associated symbols and optional hyperlink prefixes.
+% Added starred mode to create the field with full URL
+% \NewInfoField{<fieldname>}{<symbol>}[<hyperlink prefix>] -> (ex: <github symbol> D-Naveenz) 
+% \NewInfoField*{<fieldname>}{<symbol>} -> (ex: <github symbol> https://github.com/D-Naveenz)
+\NewDocumentCommand{\NewInfoField}{s m m o}{%
+  \IfBooleanTF{#1}
+    {% Starred version: full URL mode
+     \directlua{
+       next_personal_info:create_info_field("#2", "#3", "fullurl")
+     }%
+    }
+    {% Unstarred version: prefix mode
+     \IfValueTF{#4}
+       {% With hyperlink prefix
+        \directlua{
+          next_personal_info:create_info_field("#2", "#3", "prefix", "#4")
+        }%
+       }
+       {% Without hyperlink prefix  
+        \directlua{
+          next_personal_info:create_info_field("#2", "#3", "noprefix")
+        }%
+       }%
+    }%
 }
 
 % Main command to print the personal info fields in a table
-\NewDocumentCommand{\resume@info@printfields}{m}{%
-  \directlua{next_personal_info:build_grid(#1)}%
+\NewDocumentCommand{\PrintInfoGrid}{ O{3} }{
+  \directlua{
+    next_personal_info:build_grid(#1)
+  }
 }
 
 % Utility command to clear all fields
-\NewDocumentCommand{\resume@info@clearfields}{}{%
-  \directlua{next_personal_info:clear_fields()}%
-}
-
-% This command is a higher-level utility for defining new fields (e.g., email, phone) with associated symbols and optional hyperlink prefixes.
-% Added starred mode to create \printinfo with full URL
-% \NewInfoField{<fieldname>}{<symbol>}[<hyperlink prefix>]
-% \NewInfoField*{<fieldname>}{<symbol>}
-\NewDocumentCommand{\NewInfoField}{s m m o}{%
-  % Create the field directly via Lua - no need for complex LaTeX logic
+\NewDocumentCommand{\ClearInfoGrid}{}
+{
   \directlua{
-    local field_name = '#2'
-    local symbol = [==[#3]==]
-    local custom_hyper = \IfBooleanTF{#1}{true}{false}
-    local hyperlink_prefix = \tl_if_blank:nTF {#4} { '' } { [==[#4]==] }
-    next_personal_info:create_info_field(field_name, symbol, custom_hyper, hyperlink_prefix)
-  }%
+    next_personal_info:clear_fields()
+  }
 }
-%% ============= Personal Info Data Structure (Lua Implementation) =============
 
-%% Declare contact info fields
-\NewInfoField{email}{\faIcon{at}}[mailto:]
-\NewInfoField{mailaddress}{\faIcon{envelope}}
-\NewInfoField{phone}{\textbf{\faIcon{phone}}}[tel:]
-\NewInfoField{homepage}{\textbf{\faIcon{globe}}}[https://]
-\NewInfoField{twitter}{\faIcon{x-twitter}}[https://x.com/]  %% twitter -> x
-\NewInfoField{linkedin}{\faIcon{linkedin}}[https://linkedin.com/in/]
-\NewInfoField{github}{\faIcon{github}}[https://github.com/]
-\NewInfoField{medium}{\faIcon{medium}}[https://medium.com/]
+%% v1.1.0 declare name variables with default values
+\def\@name{}
+\def\@jobtitle{}
+\def\@email{}
+\def\@phone{}
 
-%% v1.1.0 declare name variables
 \newcommand{\name}[1]{\def\@name{#1}}
 \newcommand{\jobtitle}[1]{\def\@jobtitle{#1}}
 
-%% v1.1.0 Set XMP metadata using hyperxmp
+%% Define field names for accessibility
+\newcommand{\datename}{Date}
+\newcommand{\locationname}{Location}
+\newcommand{\rolename}{Role}
+\newcommand{\projectlink}{Project Link}
+
+% Define info field commands at begin document to ensure all packages are loaded
 \AtBeginDocument{%
+  % Set up hyperref if withhyper option is enabled
+  \bool_if:NT \g_withhyper_bool {
+    \hypersetup{colorlinks=true, linkcolor=link, urlcolor=link}
+  }
+  
+  % Define the actual field commands after fontawesome is loaded
+  \NewInfoField{email}{\faIcon{at}}[mailto:]%
+  \NewInfoField{mailaddress}{\faIcon{envelope}}%  
+  \NewInfoField{phone}{\textbf{\faIcon{phone}}}[tel:]%
+  \NewInfoField{homepage}{\textbf{\faIcon{home}}}[https://]%
+  \NewInfoField{twitter}{\faIcon{twitter}}[https://x.com/]%
+  \NewInfoField{linkedin}{\faIcon{linkedin}}[https://linkedin.com/in/]%
+  \NewInfoField{github}{\faIcon{github}}[https://github.com/]%
+  \NewInfoField{medium}{\faIcon{medium}}[https://medium.com/]%
+  
+  % Set XMP metadata using hyperxmp
   \hypersetup{
     pdfauthor={\@name},
     pdftitle={\@jobtitle},
-    pdfsubject={Resume~of~\@name},
+    pdfsubject={Resume of \@name},
     pdfkeywords={Resume, CV, \@jobtitle, \@name},
-    pdfcontactemail={\csname email_data\endcsname},
-    pdfcontactphone={\csname phone_data\endcsname},
+    pdfcontactemail={\@email},
+    pdfcontactphone={\@phone},
     pdflicenseurl={https://creativecommons.org/licenses/by/4.0/},
-    pdfcopyright={Copyright~\textcopyright{}~\the\year{}~\@name.~All~rights~reserved.},
+    pdfcopyright={Copyright \textcopyright{} \the\year{} \@name. All rights reserved.},
   }
 }
+
 \ExplSyntaxOff
 
 %% utils
@@ -146,9 +275,6 @@
   \def\cv@profilephoto{\@makeaphoto{\cv@profilephoto@width}{#2}}
 }
 
-\newcommand{\namefont}{\Huge\bfseries}
-\newcommand{\taglinefont}{\large\bfseries}
-\newcommand{\personalinfofont}{\footnotesize\bfseries}
 \newcommand{\cvsectionfont}{\LARGE\bfseries}
 \newcommand{\cvsubsectionfont}{\large\bfseries}
 
@@ -157,11 +283,11 @@
   \cv@profilephoto\hfill%
   \begin{minipage}{\dimexpr\linewidth-\cv@profilephoto@width-\cv@profilephoto@hspace\relax}%
     \raggedright%
-    {\namefont\color{name}\MakeUppercase{\@name}\par}
+    {\nextNameStyle{\@name}\par}
     \medskip
-    {\taglinefont\color{tagline}\@jobtitle\par}
+    {\nextTaglineStyle{\@jobtitle}\par}
     \medskip
-    {\personalinfofont\cv@info@printfields{4}\par}
+    {\nextPersonalInfoStyle{\resume@info@printfields{4}}\par}
   \end{minipage}\par
   \vspace{12pt}
   \divider%
@@ -188,12 +314,12 @@
     \smallskip}
   \ifstrequal{#3}{}{}{%
     {\small\color{emphasis}\makebox[0.5\linewidth][l]%
-        {\BeginAccSupp{method=pdfstringdef,ActualText={\datename:}}\cvDateMarker\EndAccSupp{}%
+        {\BeginAccSupp{method=pdfstringdef,ActualText={\datename:}}\nextDateMarker\EndAccSupp{}%
           ~\normalfont#3}%
       }}%
   \ifstrequal{#4}{}{}{%
     {\small\color{emphasis}\makebox[0.5\linewidth][r]%
-        {\BeginAccSupp{method=pdfstringdef,ActualText={\locationname:}}\cvLocationMarker\EndAccSupp{}%
+        {\BeginAccSupp{method=pdfstringdef,ActualText={\locationname:}}\nextLocationMarker\EndAccSupp{}%
           ~\normalfont#4}%
       }}\par
   \medskip\normalsize
@@ -219,7 +345,7 @@
     %% Role
     {%
       {\small\color{emphasis}\makebox[0.5\linewidth][l]%
-          {\BeginAccSupp{method=pdfstringdef,ActualText={\rolename:}}\cvProjectRoleMarker\EndAccSupp{}%
+          {\BeginAccSupp{method=pdfstringdef,ActualText={\rolename:}}\nextProjectRoleMarker\EndAccSupp{}%
             ~\normalfont\ifstrequal{#2}{}{Personal Project}{#2}}%
         }%
     }%
@@ -230,7 +356,7 @@
     \setsepchar[,]{/}%
     \readlist*\urllist{#3}%
     {\small\color{emphasis}\makebox[0.5\linewidth][r]%
-      {\BeginAccSupp{method=pdfstringdef,ActualText={\projectlink:}}\cvProjectLinkMarker\EndAccSupp{}%
+      {\BeginAccSupp{method=pdfstringdef,ActualText={\projectlink:}}\nextProjectLinkMarker\EndAccSupp{}%
         ~\normalfont\href{#3}{\textbf{GitHub: }\urllist[-1]}}%
     }%
     \let\urllist\relax
@@ -255,9 +381,9 @@
       \small\color{emphasis}%
       \begin{tabularx}{\columnwidth}{@{}m{1.2em} @{\hspace{1ex}} Y@{}}
         %% Project
-        \BeginAccSupp{method=pdfstringdef,ActualText={\detokenize{[project icon]}}}\cvProjectMarker\EndAccSupp{}  & \textbf{Project: }#1                                   \\
+        \BeginAccSupp{method=pdfstringdef,ActualText={\detokenize{[project icon]}}}\nextProjectMarker\EndAccSupp{}  & \textbf{Project: }#1                                   \\
         %% Role
-        \BeginAccSupp{method=pdfstringdef,ActualText={\detokenize{[role icon]}}}\cvProjectRoleMarker\EndAccSupp{} & \textbf{Role: }\ifstrequal{#2}{}{Personal Project}{#2} \\
+        \BeginAccSupp{method=pdfstringdef,ActualText={\detokenize{[role icon]}}}\nextProjectRoleMarker\EndAccSupp{} & \textbf{Role: }\ifstrequal{#2}{}{Personal Project}{#2} \\
       \end{tabularx}\par%
       %% Project Link
       \ifstrequal{#3}{}{}
@@ -267,7 +393,7 @@
         \setsepchar[,]{/}%
         \readlist*\urllist{#3}%
         \begin{tabularx}{\columnwidth}{@{}m{1.2em} @{\hspace{1ex}} >{\raggedright\arraybackslash}X@{}}
-          \BeginAccSupp{method=pdfstringdef,ActualText={\detokenize{[github icon]}}}\cvProjectLinkMarker\EndAccSupp{} & \href{#3}{\textbf{GitHub: }\urllist[-1]} \\
+          \BeginAccSupp{method=pdfstringdef,ActualText={\detokenize{[github icon]}}}\nextProjectLinkMarker\EndAccSupp{} & \href{#3}{\textbf{GitHub: }\urllist[-1]} \\
         \end{tabularx}%
         \let\urllist\relax
       }%
@@ -289,7 +415,7 @@
 % adds accsupp for the icon as well
 \newcommand{\cvcert}[3]{%
   \begin{tabularx}{\columnwidth}{@{}p{2em} @{\hspace{1ex}} >{\raggedright\arraybackslash}X@{}}
-    \multirow{2}{*}{\Large\color{accent}\BeginAccSupp{method=escape,ActualText={\detokenize{\cvCertificateMarker}: }}\cvCertificateMarker\EndAccSupp{}} & \bfseries\textcolor{emphasis}{#1} \\
+    \multirow{2}{*}{\Large\color{accent}\BeginAccSupp{method=escape,ActualText={\detokenize{\nextCertificateMarker}: }}\nextCertificateMarker\EndAccSupp{}} & \bfseries\textcolor{emphasis}{#1} \\
                                                                                                                                                         & \small{\href{#2}{#3}}
   \end{tabularx}%
   \smallskip
@@ -320,11 +446,11 @@
 \foreach \x in {1,...,5}{%
 \ifdimequal{\x pt - #2 pt}{0.5pt}%
 %% if true, then print half-filled marker
-{\clipbox*{0pt -0.25ex {.5\width} {\totalheight}}{\color{accent}{\cvRatingMarker}}%
-\clipbox*{{.5\width} -0.25ex {\width} {\totalheight}}{\color{body!30}{\cvRatingMarker}}%
+{\clipbox*{0pt -0.25ex {.5\width} {\totalheight}}{\color{accent}{\nextRatingMarker}}%
+\clipbox*{{.5\width} -0.25ex {\width} {\totalheight}}{\color{body!30}{\nextRatingMarker}}%
 }%
 %% if false, then print marker filled according to rating
-{\ifdimgreater{\x bp}{#2 bp}{\color{body!30}}{\color{accent}}{\cvRatingMarker}}%
+{\ifdimgreater{\x bp}{#2 bp}{\color{body!30}}{\color{accent}}{\nextRatingMarker}}%
 \hspace{1em}% Add space between markers (adjust the value as needed)
 }%
 \EndAccSupp{}\par\vspace{1ex}%

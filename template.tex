@@ -45,25 +45,31 @@
 \colorlet{body}{LightGrey}
 
 % Change some fonts, if necessary
-\renewcommand{\namefont}{\Huge\rmfamily\bfseries}
-\renewcommand{\personalinfofont}{\footnotesize}
-\renewcommand{\cvsectionfont}{\LARGE\rmfamily\bfseries}
-\renewcommand{\cvsubsectionfont}{\large\bfseries}
-
+% \renewcommand{\namefont}{\Huge\rmfamily\bfseries}
+% \renewcommand{\personalinfofont}{\footnotesize}
+% \renewcommand{\cvsectionfont}{\LARGE\rmfamily\bfseries}
+% \renewcommand{\cvsubsectionfont}{\large\bfseries}
 
 % Change the bullets for itemize and rating marker
 % for \cvskill if you want to
-\renewcommand{\cvItemMarker}{{\small\textbullet}}
+% \renewcommand{\cvItemMarker}{{\small\textbullet}}
 % \renewcommand{\cvRatingMarker}{\faIcon{circle}}
 % ...and the markers for the date/location for \cvevent
 % \renewcommand{\cvDateMarker}{\faCalendar*[regular]}
 % \renewcommand{\cvLocationMarker}{\faMapMarker*}
 
+\name{John Doe}
+\jobtitle{Software Engineer}
+
+\begin{document}
+%% ChkTeX will complain about wrong length of dashes. You can ignore it. or use {-} instead of -.
+%% https://tex.stackexchange.com/a/687676
+
 % Personal Information
 \name{Your Name Here}
 \jobtitle{Your Position or Tagline Here}
 \email{your_name@email.com}
-\phone{000-00-0000}
+\phone{000--00--0000}
 % These are optional and you can remove them
 \homepage{www.homepage.com}
 \linkedin{your_id}
@@ -75,10 +81,6 @@
 % \NewInfoField{gitlab}{\faGitlab}[https://gitlab.com/]
 % \gitlab{your_id}
 
-\begin{document}
-%% ChkTeX will complain about wrong length of dashes. You can ignore it. or use {-} instead of -.
-%% https://tex.stackexchange.com/a/687676
-
 %% You can add multiple photos on the left or right
 \photo{2.8cm}{Globe_High}
 
@@ -87,230 +89,230 @@
 % \AtBeginEnvironment{itemize}{\small}
 
 %% Set the left/right column width ratio to 6:4.
-\columnratio{0.6}
+% \columnratio{0.6}
 
-% Start a 2-column paracol. Both the left and right columns will automatically
-% break across pages if things get too long.
-\begin{paracol}{2}
-\cvsection{Experience}
+% % Start a 2-column paracol. Both the left and right columns will automatically
+% % break across pages if things get too long.
+% \begin{paracol}{2}
+% \cvsection{Experience}
 
-\cvevent{Job Title 1}{Company}{Month 20XX --- Ongoing}{Location}
-\cvsubproject{Your Project}{Your Role}{}{%
-  \begin{itemize}%
-  \item Project description 1
-  \item Project description 2
-  \end{itemize}%
-}{C\#, {.NET}, SQLite}%
+% \cvevent{Job Title 1}{Company}{Month 20XX --- Ongoing}{Location}
+% \cvsubproject{Your Project}{Your Role}{}{%
+%   \begin{itemize}%
+%   \item Project description 1
+%   \item Project description 2
+%   \end{itemize}%
+% }{C\#, {.NET}, SQLite}%
 
-\cvsectionspace%
-
-
-\cvsection{Education}
-
-\cvevent{Ph.D.\ in Your Discipline}{Your University}{Sept 2002 --- June 2006}{Location}
-Thesis title: Wonderful Research
-
-\divider%
-
-\cvevent{M.Sc.\ in Your Discipline}{Your University}{Sept 2001 --- June 2002}{Location}
-
-\divider%
-
-\cvevent{B.Sc.\ in Your Discipline}{Stanford University}{Sept 1998 --- June 2001}{Location}
-Final Year Project: \textit{(Group Project)}\\
-\begin{itemize}
-\item \textbf{Title:} \textit{Project Title}
-\item \textbf{Role:} \textit{Your role}
-\item \textbf{Grade:} \textit{A+}
-\end{itemize}
-
-\cvsectionspace%
-
-% use ONLY \newpage if you want to force a page break for
-% ONLY the current column
-\newpage
-
-\cvsection{Projects}
-
-\cvproject{Name 1, Customer experience optimizer and sales management system}
-{Your Role}{https://github.com/you/your-repository}{%
-  \begin{itemize}%
-    \item Project description 1
-    \item Project description 2
-  \end{itemize}%
-}{ASP.NET, Vue.js, Node.js, MS SQL}%
-
-\divider%
-
-\cvproject{Name 2, Project title in descriptive format}
-{}{https://github.com/you/your-repository}{%
-  \begin{itemize}%
-    \item Project description 1
-    \item Project description 2
-  \end{itemize}%
-}{Java, React.js}%
-
-\cvsectionspace%
+% \cvsectionspace%
 
 
-\cvsection{Open-Source Contributions}
+% \cvsection{Education}
 
-\cvproject{Name1, Project title in descriptive format}
-{}{https://github.com/you/your-repository}{%
-  \begin{itemize}%
-    \item Project description 1
-    \item Project description 2
-  \end{itemize}%
-}{Java, React.js}%
+% \cvevent{Ph.D.\ in Your Discipline}{Your University}{Sept 2002 --- June 2006}{Location}
+% Thesis title: Wonderful Research
 
-\divider%
+% \divider%
 
-\cvproject{Name2, Project title in descriptive format}
-{}{https://github.com/you/your-repository}{%
-  \begin{itemize}%
-    \item Project description 1
-    \item Project description 2
-  \end{itemize}%
-}{Java, React.js}%
+% \cvevent{M.Sc.\ in Your Discipline}{Your University}{Sept 2001 --- June 2002}{Location}
 
-%%% ==============================================================================================================
-%% Switch to the right column. This will now automatically move to the second
-%% page if the content is too long.
-\switchcolumn%
+% \divider%
 
-\cvsection{Career Objective}
+% \cvevent{B.Sc.\ in Your Discipline}{Stanford University}{Sept 1998 --- June 2001}{Location}
+% Final Year Project: \textit{(Group Project)}\\
+% \begin{itemize}
+% \item \textbf{Title:} \textit{Project Title}
+% \item \textbf{Role:} \textit{Your role}
+% \item \textbf{Grade:} \textit{A+}
+% \end{itemize}
 
-A brief statement (2--3 sentences) highlighting your key qualifications, experience, and career goals.
+% \cvsectionspace%
 
-\cvsectionspace%
-
-
-\cvsection{Skills}
-
-\cvtagheader{Cloud Technologies}
-\cvskill{Azure}{4.5} %% Supports X.5 values.
-\cvtag{Virtual Machines}
-\cvtag{Azure DevOps}\\
-\cvtag{Azure Cosmos DB}
-
-\bigskip%
-
-\cvskill{AWS}{3} %% Supports X.5 values.
-\cvtag{EC2}
-\cvtag{RDS}
-
-\bigskip%
-
-\cvskill{GCP}{4} %% Supports X.5 values.
-\cvtag{BigQuery}
-\cvtag{Dataproc}
-\cvtag{Databrics}
-
-\divider\smallskip%
-
-\cvtagheader{Languages}
-\cvtag{Python}
-\cvtag{C\#}
-\cvtag{SQL}
-\cvtag{Java}\\
-\cvtag{Javascript}
-\cvtag{C++}
-
-\divider\smallskip
-
-\cvtagheader{Frameworks \& Libraries}
-\cvtag{Apache Spark}
-\cvtag{Pandas}
-\cvtag{NumPy}\\
-\cvtag{.NET}
-\cvtag{ASP.NET}
-\cvtag{Entity Framework}\\
-\cvtag{Microsoft Community Toolkit}
-\cvtag{WinUI}\\
-\cvtag{Spring-boot}
-\cvtag{Vue.js}
-\cvtag{Unity}
-
-\divider\smallskip
-
-% ONLY the current column
+% % use ONLY \newpage if you want to force a page break for
+% % ONLY the current column
 % \newpage
 
-\cvtagheader{Databases}
-\cvtag{PostgreSQL}
-\cvtag{MySQL}\\
-\cvtag{MS SQL Server}
+% \cvsection{Projects}
 
-\divider\smallskip
+% \cvproject{Name 1, Customer experience optimizer and sales management system}
+% {Your Role}{https://github.com/you/your-repository}{%
+%   \begin{itemize}%
+%     \item Project description 1
+%     \item Project description 2
+%   \end{itemize}%
+% }{ASP.NET, Vue.js, Node.js, MS SQL}%
 
-\cvtagheader{Big Data Technologies}
-\cvtag{Databricks}
-\cvtag{Hive}
-\cvtag{Airflow}
+% \divider%
 
-\divider\smallskip
+% \cvproject{Name 2, Project title in descriptive format}
+% {}{https://github.com/you/your-repository}{%
+%   \begin{itemize}%
+%     \item Project description 1
+%     \item Project description 2
+%   \end{itemize}%
+% }{Java, React.js}%
 
-\cvtagheader{VCS}
-\cvtag{Git}
-\cvtag{GitHub}
-\cvtag{Bitbucket}\\
-\cvtag{Azure DevOps}
-
-\divider\smallskip
-
-\cvtagheader{Tools}
-\cvtag{Jupyter Notebooks}
-\cvtag{PyCharm}\\
-\cvtag{Visual Studio \& Code}
-\cvtag{Docker}
-\cvtag{Jira}
-\cvtag{Confluence}
-
-\cvsectionspace%
+% \cvsectionspace%
 
 
-\cvsection{Certifications}
+% \cvsection{Open-Source Contributions}
 
-\cvcert{Certificate 1}{https://certificate/link/1}{Issuing Organization}
+% \cvproject{Name1, Project title in descriptive format}
+% {}{https://github.com/you/your-repository}{%
+%   \begin{itemize}%
+%     \item Project description 1
+%     \item Project description 2
+%   \end{itemize}%
+% }{Java, React.js}%
 
-\medskip%
+% \divider%
 
-\cvcert{Certificate 2}{https://certificate/link/2}{Issuing Organization}
+% \cvproject{Name2, Project title in descriptive format}
+% {}{https://github.com/you/your-repository}{%
+%   \begin{itemize}%
+%     \item Project description 1
+%     \item Project description 2
+%   \end{itemize}%
+% }{Java, React.js}%
 
-\cvsectionspace%
+% %%% ==============================================================================================================
+% %% Switch to the right column. This will now automatically move to the second
+% %% page if the content is too long.
+% \switchcolumn%
 
+% \cvsection{Career Objective}
 
-\cvsection{Archivements}
+% A brief statement (2--3 sentences) highlighting your key qualifications, experience, and career goals.
 
-\cvachievement{\textbf{\faIcon{trophy}}}{Fantastic Achievement}{and some details about it}
-
-\divider%
-
-\cvachievement{\textbf{\faIcon{heart-pulse}}}{Another achievement}{more details about it of course}
-
-\divider%
-
-\cvachievement{\textbf{\faIcon{heart-pulse}}}{Another achievement}{more details about it of course}
-
-
-%% Yeah I didn't spend too much time making all the
-%% spacing consistent... sorry. Use \smallskip, \medskip,
-%% \bigskip, \vspace etc to make adjustments.
-\cvsectionspace%
-
-
-\cvsection{Referees}
-
-\cvref{Prof.\ Alpha Beta}{Role}{Institute}{a.beta@university.edu}
-{Address Line 1\\Address line 2}
-
-\divider%
-
-\cvref{Prof.\ Gamma Delta}{Role}{Institute}{g.delta@university.edu}
-{Address Line 1\\Address line 2}
+% \cvsectionspace%
 
 
-\end{paracol}
+% \cvsection{Skills}
+
+% \cvtagheader{Cloud Technologies}
+% \cvskill{Azure}{4.5} %% Supports X.5 values.
+% \cvtag{Virtual Machines}
+% \cvtag{Azure DevOps}\\
+% \cvtag{Azure Cosmos DB}
+
+% \bigskip%
+
+% \cvskill{AWS}{3} %% Supports X.5 values.
+% \cvtag{EC2}
+% \cvtag{RDS}
+
+% \bigskip%
+
+% \cvskill{GCP}{4} %% Supports X.5 values.
+% \cvtag{BigQuery}
+% \cvtag{Dataproc}
+% \cvtag{Databrics}
+
+% \divider\smallskip%
+
+% \cvtagheader{Languages}
+% \cvtag{Python}
+% \cvtag{C\#}
+% \cvtag{SQL}
+% \cvtag{Java}\\
+% \cvtag{Javascript}
+% \cvtag{C++}
+
+% \divider\smallskip
+
+% \cvtagheader{Frameworks \& Libraries}
+% \cvtag{Apache Spark}
+% \cvtag{Pandas}
+% \cvtag{NumPy}\\
+% \cvtag{.NET}
+% \cvtag{ASP.NET}
+% \cvtag{Entity Framework}\\
+% \cvtag{Microsoft Community Toolkit}
+% \cvtag{WinUI}\\
+% \cvtag{Spring-boot}
+% \cvtag{Vue.js}
+% \cvtag{Unity}
+
+% \divider\smallskip
+
+% % ONLY the current column
+% % \newpage
+
+% \cvtagheader{Databases}
+% \cvtag{PostgreSQL}
+% \cvtag{MySQL}\\
+% \cvtag{MS SQL Server}
+
+% \divider\smallskip
+
+% \cvtagheader{Big Data Technologies}
+% \cvtag{Databricks}
+% \cvtag{Hive}
+% \cvtag{Airflow}
+
+% \divider\smallskip
+
+% \cvtagheader{VCS}
+% \cvtag{Git}
+% \cvtag{GitHub}
+% \cvtag{Bitbucket}\\
+% \cvtag{Azure DevOps}
+
+% \divider\smallskip
+
+% \cvtagheader{Tools}
+% \cvtag{Jupyter Notebooks}
+% \cvtag{PyCharm}\\
+% \cvtag{Visual Studio \& Code}
+% \cvtag{Docker}
+% \cvtag{Jira}
+% \cvtag{Confluence}
+
+% \cvsectionspace%
+
+
+% \cvsection{Certifications}
+
+% \cvcert{Certificate 1}{https://certificate/link/1}{Issuing Organization}
+
+% \medskip%
+
+% \cvcert{Certificate 2}{https://certificate/link/2}{Issuing Organization}
+
+% \cvsectionspace%
+
+
+% % \cvsection{Archivements}
+
+% % \cvachievement{\textbf{\faIcon{trophy}}}{Fantastic Achievement}{and some details about it}
+
+% % \divider%
+
+% % \cvachievement{\textbf{\faIcon{heart-pulse}}}{Another achievement}{more details about it of course}
+
+% % \divider%
+
+% % \cvachievement{\textbf{\faIcon{heart-pulse}}}{Another achievement}{more details about it of course}
+
+
+% %% Yeah I didn't spend too much time making all the
+% %% spacing consistent... sorry. Use \smallskip, \medskip,
+% %% \bigskip, \vspace etc to make adjustments.
+% \cvsectionspace%
+
+
+% \cvsection{Referees}
+
+% \cvref{Prof.\ Alpha Beta}{Role}{Institute}{a.beta@university.edu}
+% {Address Line 1\\Address line 2}
+
+% \divider%
+
+% \cvref{Prof.\ Gamma Delta}{Role}{Institute}{g.delta@university.edu}
+% {Address Line 1\\Address line 2}
+
+
+% \end{paracol}
 
 
 \end{document}
