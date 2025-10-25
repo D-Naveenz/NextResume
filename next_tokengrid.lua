@@ -29,12 +29,12 @@ local function get_latex_field_string(self, field_name, text, hyperlink)
   local symbol_part
   if self.hideFieldNames then
     symbol_part = string.format(
-      "{\\BeginAccSupp{method=escape,ActualText={%s:}}\\normalfont%s\\EndAccSupp{}}",
+      "{\\BeginAccSupp{method=escape,ActualText={%s:}}\\normalfont %s\\EndAccSupp{}}",
       field_name, symbol
     )
   else
     symbol_part = string.format(
-      "{\\normalfont%s\\hspace{0.3em}%s:}",
+      "{\\normalfont %s\\hspace{0.3em}%s:}",
       symbol, field_name
     )
   end

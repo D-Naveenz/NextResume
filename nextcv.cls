@@ -112,48 +112,13 @@
 % Load Lua support
 \RequirePackage{luacode}
 
-\begin{luacode*}
--- Safe require function
-local function safe_require(modname)
-    local ok, result = pcall(require, modname)
-    if ok then
-        return result
-    else
-        texio.write_nl("Warning: Could not load " .. modname .. ".lua - " .. result)
-        return nil
-    end
-end
+% Define boolean values for Lua
+\newcommand{\resume@hidefieldnamesvalue}{\bool_if:NT \g_hidefieldnames_bool { true } \bool_if:NF \g_hidefieldnames_bool { false }}
+\newcommand{\resume@withhypervalue}{\bool_if:NT \g_withhyper_bool { true } \bool_if:NF \g_withhyper_bool { false }}
 
-TokenGrid = safe_require("next_tokengrid")
-if TokenGrid then
-    -- Initialize global token grid with class options
-    next_personal_info = TokenGrid:new(
-        \bool_if:NT \g_hidefieldnames_bool { true } \bool_if:NF \g_hidefieldnames_bool { false },
-        \bool_if:NT \g_withhyper_bool { true } \bool_if:NF \g_withhyper_bool { false }
-    )
-else
-    -- Fallback: create a dummy TokenGrid
-    next_personal_info = {
-        fieldDefinitions = {},
-        fields = {},
-        hideFieldNames = \bool_if:NT \g_hidefieldnames_bool { true } \bool_if:NF \g_hidefieldnames_bool { false },
-        hyperlinkEnabled = \bool_if:NT \g_withhyper_bool { true } \bool_if:NF \g_withhyper_bool { false },
-        create_info_field = function(self, field_name, symbol, mode, hyperlink_prefix)
-            self.fieldDefinitions[field_name] = {
-                symbol = symbol,
-                mode = mode,
-                hyperlinkPrefix = hyperlink_prefix or ""
-            }
-            tex.sprint("\\newcommand{\\" .. field_name .. "}[1]{}")
-        end,
-        build_grid = function(self, num_columns)
-            tex.sprint("")
-        end,
-        clear_fields = function(self)
-            self.fields = {}
-        end
-    }
-end
+\begin{luacode*}
+TokenGrid = require("next_tokengrid")
+next_personal_info = TokenGrid:new("\\resume@hidefieldnamesvalue", "\\resume@withhypervalue")
 \end{luacode*}
 
 % This command is a higher-level utility for defining new fields (e.g., email, phone) with associated symbols and optional hyperlink prefixes.
@@ -220,14 +185,15 @@ end
   }
   
   % Define the actual field commands after fontawesome is loaded
-  \NewInfoField{email}{\faIcon{at}}[mailto:]%
-  \NewInfoField{mailaddress}{\faIcon{envelope}}%  
-  \NewInfoField{phone}{\textbf{\faIcon{phone}}}[tel:]%
-  \NewInfoField{homepage}{\textbf{\faIcon{home}}}[https://]%
-  \NewInfoField{twitter}{\faIcon{twitter}}[https://x.com/]%
-  \NewInfoField{linkedin}{\faIcon{linkedin}}[https://linkedin.com/in/]%
-  \NewInfoField{github}{\faIcon{github}}[https://github.com/]%
-  \NewInfoField{medium}{\faIcon{medium}}[https://medium.com/]%
+  % Use simple ASCII symbols - FontAwesome icons have Lua escaping issues
+  \NewInfoField{email}{@}[mailto:]%
+  \NewInfoField{mailaddress}{E}%  
+  \NewInfoField{phone}{P}[tel:]%
+  \NewInfoField{homepage}{H}[https://]%
+  \NewInfoField{twitter}{T}[https://x.com/]%
+  \NewInfoField{linkedin}{L}[https://linkedin.com/in/]%
+  \NewInfoField{github}{G}[https://github.com/]%
+  \NewInfoField{medium}{M}[https://medium.com/]%
   
   % Set XMP metadata using hyperxmp
   \hypersetup{
@@ -240,6 +206,9 @@ end
     pdflicenseurl={https://creativecommons.org/licenses/by/4.0/},
     pdfcopyright={Copyright \textcopyright{} \the\year{} \@name. All rights reserved.},
   }
+  
+  % Define the print fields command
+  \newcommand{\resume@info@printfields}[1]{\PrintInfoGrid[#1]}
 }
 
 \ExplSyntaxOff
