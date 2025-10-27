@@ -23,7 +23,9 @@
 \geometry{left=1.25cm,right=1.25cm,top=1.5cm,bottom=1.5cm,columnsep=1.2cm}
 
 % The paracol package lets you typeset columns of text in parallel
-\usepackage{paracol}
+% \usepackage{paracol}
+\usepackage[base]{babel}
+\usepackage{lipsum}
 
 % Change the colours if you want to
 \definecolor{SlateGrey}{HTML}{2E2E2E}
@@ -63,7 +65,7 @@
 %% https://tex.stackexchange.com/a/687676
 
 %% You can add multiple photos on the left or right
-\begin{resumeheader}
+\begin{resumeheader}[4]
     \profilephoto{Globe_High}{2.8cm}
 
     \name{John Doe}
@@ -86,9 +88,23 @@
     % \gitlab{your_id}
 \end{resumeheader}
 
-\begin{nextsection}{Career Objective}[\nextSVGIcon{email}]
-    \large Hi
+\begin{nextsection}{Profile}[\nextSVGIcon{email}]
+    Experienced software engineer with expertise in cloud technologies, modern programming languages, and scalable application development. Passionate about creating innovative solutions and leading cross-functional teams to deliver high-quality products.
 \end{nextsection}
+
+\begin{nextskills}[2]
+    \begin{skillsection}{Cloud Technologies}
+        \weightedskill{Azure}{4.5}
+        \weightedskill{AWS}{3.5}
+        \weightedskill{GCP}{4}
+    \end{skillsection}
+
+    \begin{skillsection}{Launguages}
+        \skill{C\#}
+        \skill{Python}
+        \skill{JavaScript \& TypeScript}
+    \end{skillsection}
+\end{nextskills}
 
 %% Depending on your tastes, you may want to make fonts of itemize environments slightly smaller
 % \AtBeginEnvironment{itemize}{\small}
@@ -191,90 +207,10 @@
 
 % \cvsectionspace%
 
-
-% \cvsection{Skills}
-
-% \cvtagheader{Cloud Technologies}
-% \cvskill{Azure}{4.5} %% Supports X.5 values.
-% \cvtag{Virtual Machines}
-% \cvtag{Azure DevOps}\\
-% \cvtag{Azure Cosmos DB}
-
-% \bigskip%
-
-% \cvskill{AWS}{3} %% Supports X.5 values.
-% \cvtag{EC2}
-% \cvtag{RDS}
-
-% \bigskip%
-
-% \cvskill{GCP}{4} %% Supports X.5 values.
-% \cvtag{BigQuery}
-% \cvtag{Dataproc}
-% \cvtag{Databrics}
-
-% \divider\smallskip%
-
-% \cvtagheader{Languages}
-% \cvtag{Python}
-% \cvtag{C\#}
-% \cvtag{SQL}
-% \cvtag{Java}\\
-% \cvtag{Javascript}
-% \cvtag{C++}
-
-% \divider\smallskip
-
-% \cvtagheader{Frameworks \& Libraries}
-% \cvtag{Apache Spark}
-% \cvtag{Pandas}
-% \cvtag{NumPy}\\
-% \cvtag{.NET}
-% \cvtag{ASP.NET}
-% \cvtag{Entity Framework}\\
-% \cvtag{Microsoft Community Toolkit}
-% \cvtag{WinUI}\\
-% \cvtag{Spring-boot}
-% \cvtag{Vue.js}
-% \cvtag{Unity}
-
 % \divider\smallskip
 
 % % ONLY the current column
 % % \newpage
-
-% \cvtagheader{Databases}
-% \cvtag{PostgreSQL}
-% \cvtag{MySQL}\\
-% \cvtag{MS SQL Server}
-
-% \divider\smallskip
-
-% \cvtagheader{Big Data Technologies}
-% \cvtag{Databricks}
-% \cvtag{Hive}
-% \cvtag{Airflow}
-
-% \divider\smallskip
-
-% \cvtagheader{VCS}
-% \cvtag{Git}
-% \cvtag{GitHub}
-% \cvtag{Bitbucket}\\
-% \cvtag{Azure DevOps}
-
-% \divider\smallskip
-
-% \cvtagheader{Tools}
-% \cvtag{Jupyter Notebooks}
-% \cvtag{PyCharm}\\
-% \cvtag{Visual Studio \& Code}
-% \cvtag{Docker}
-% \cvtag{Jira}
-% \cvtag{Confluence}
-
-% \cvsectionspace%
-
 
 % \cvsection{Certifications}
 

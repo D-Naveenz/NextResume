@@ -54,6 +54,7 @@
 \RequirePackage{fontspec}
 \RequirePackage{graphicx} %  pass svg options to package graphicx
 \RequirePackage{svg}
+\RequirePackage{multicol}
 
 % Change the font if you want to, depending on whether you're using xelatex/lualatex
 % Here we set Aptos (the default Microsoft font) as the main font for the Next Resume theme
@@ -161,14 +162,14 @@ next_personal_info = TokenGrid:new("\\resume@hidefieldnamesvalue", "\\resume@wit
 }
 
 % Main command to print the personal info fields in a table
-\NewDocumentCommand{\resume@info@printfields}{ O{3} }{%
+\newcommand{\resume@info@printfields}[1]{%
   \directlua{
     next_personal_info:build_grid(#1)
   }
 }
 
 % Utility command to clear all fields
-\NewDocumentCommand{\resume@info@clear}{}
+\newcommand{\resume@info@clear}
 {
   \directlua{
     next_personal_info:clear_fields()
@@ -222,6 +223,7 @@ next_personal_info = TokenGrid:new("\\resume@hidefieldnamesvalue", "\\resume@wit
 \newcommand{\cvsectionfont}{\LARGE\bfseries}
 \newcommand{\cvsubsectionfont}{\large\bfseries}
 
+% The default section environment with optional icon
 \NewDocumentEnvironment{nextsection}{m O{}}{%
   \par\vspace{1.5\baselineskip}\noindent % Add vertical space
   % Add the section title in a table to align with the icon if provided
@@ -239,7 +241,8 @@ next_personal_info = TokenGrid:new("\\resume@hidefieldnamesvalue", "\\resume@wit
   \par
 }%
 
-\newenvironment{resumeheader}{%
+% Resume Header Environment
+\NewDocumentEnvironment{resumeheader}{ O{3} }{%
   % Support for multiple photos
   \newlength{\resume@profilephoto@width}
   \newlength{\resume@profilephoto@hspace}
@@ -290,11 +293,57 @@ next_personal_info = TokenGrid:new("\\resume@hidefieldnamesvalue", "\\resume@wit
     \medskip
     {\nextTaglineStyle{\@jobtitle}\par}
     \medskip
-    {\nextPersonalInfoStyle{\resume@info@printfields[4]}\par}
+    {\nextPersonalInfoStyle{\resume@info@printfields{#1}}\par}
   \end{minipage}\par
   \vspace{12pt}
   \endgroup
 }
+
+% Resume Skills Environment. Use \columnbreak to break columns manually.
+% Parameters: [number of columns (default 1)]
+\NewDocumentEnvironment{nextskills}{ O{1} }{%
+  % Add a skill with weighted rating
+  % Use accsupp so that the actual numeric value is copied/pasted and also support 0.5, 1.5, 2.5, 3.5, 4.5
+  % Parameters: <skill name> <rating out of 5>
+  \newcommand{\weightedskill}[2]{%
+    {\color{emphasis}##1}\hfill
+    \BeginAccSupp{method=plain,ActualText={##2}}
+    \foreach \x in {1,...,5}{%
+      \ifdimequal{\x pt - ##2 pt}{0.5pt}{%
+        % if true, then print half-filled marker
+        \clipbox*{0pt -0.25ex {.5\width} {\totalheight}}{\color{accent}{\nextRatingMarker}}%
+        \clipbox*{{.5\width} -0.25ex {\width} {\totalheight}}{\color{body!30}{\nextRatingMarker}}%
+      }{%
+        % if false, then print marker filled according to rating
+        \ifdimgreater{\x bp}{##2 bp}{\color{body!30}}{\color{accent}}{\nextRatingMarker}
+      }%
+      \hspace{1em}% Add space between markers (adjust the value as needed)
+    }%
+    \EndAccSupp{}
+    \par\vspace{1ex}%
+  }
+
+  \newcommand{\skill}[1]{##1,}
+
+  % Skill Section Environment
+  \NewDocumentEnvironment{skillsection}{ m O{1em} }{%
+    % Prevent column breaks within skill sections
+    \begin{minipage}[t]{\dimexpr\columnwidth-3pt\relax} % [t] for top alignment
+      {\large\textcolor{emphasis}{\bfseries-- \MakeUppercase{##1}}}\par%
+      \def\contentwidth{\dimexpr\linewidth-##2\relax}%
+      \hfill
+      \begin{minipage}[t]{\contentwidth} % [t] for top alignment
+  }{%
+      \end{minipage}
+    \end{minipage}
+  }%
+
+  \begin{nextsection}{Skills}[\nextSVGIcon{email}]%
+    \begin{multicols}{#1}%
+}{%
+    \end{multicols}%
+  \end{nextsection}%
+}%
 
 \newcommand{\cvsubsection}[1]{%
   \smallskip%
@@ -424,31 +473,8 @@ next_personal_info = TokenGrid:new("\\resume@hidefieldnamesvalue", "\\resume@wit
   \smallskip
 }
 
-\newcommand{\cvtagheader}[1]{
-  {\large\textcolor{emphasis}{\bfseries#1}}\par%
-  \medskip%
-}
-
 \newcommand{\cvtag}[1]{%
   \tikz[baseline]\node[anchor=base,draw=body!30,rounded corners,inner xsep=1ex,inner ysep =0.75ex,text height=1.5ex,text depth=.25ex]{#1};
-}
-
-% Use accsupp so that the actual numeric value is copied/pasted
-%       and also support 0.5, 1.5, 2.5, 3.5, 4.5
-\newcommand{\cvskill}[2]{%
-{\color{emphasis}#1}\hfill
-\BeginAccSupp{method=plain,ActualText={#2}}
-\foreach \x in {1,...,5}{%
-\ifdimequal{\x pt - #2 pt}{0.5pt}%
-%% if true, then print half-filled marker
-{\clipbox*{0pt -0.25ex {.5\width} {\totalheight}}{\color{accent}{\nextRatingMarker}}%
-\clipbox*{{.5\width} -0.25ex {\width} {\totalheight}}{\color{body!30}{\nextRatingMarker}}%
-}%
-%% if false, then print marker filled according to rating
-{\ifdimgreater{\x bp}{#2 bp}{\color{body!30}}{\color{accent}}{\nextRatingMarker}}%
-\hspace{1em}% Add space between markers (adjust the value as needed)
-}%
-\EndAccSupp{}\par\vspace{1ex}%
 }
 
 \newcommand{\cvref}[4]{%
