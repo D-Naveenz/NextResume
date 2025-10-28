@@ -12,20 +12,11 @@
 %%%%%%%%%%%%%%%%
 
 % Set PDF/A standard
-%\DocumentMetadata{pdfstandard=A-2b, pdfversion=1.7, lang=en}
-%% Use the "normalphoto" option if you want a normal photo instead of cropped to a circle
-% \documentclass[10pt,a4paper,normalphoto]{nextcv}
-\documentclass[10pt,a4paper,ragged2e,withhyper]{nextcv}
-%% NextCV uses the fontawesome5 and packages.
-%% See http://texdoc.net/pkg/fontawesome5 for full list of symbols.
+% \DocumentMetadata{pdfstandard=A-2b, pdfversion=1.7, lang=en}
+\documentclass[10pt,a4paper,withhyper]{nextcv}
 
 % Change the page layout if you need to
 \geometry{left=1.25cm,right=1.25cm,top=1.5cm,bottom=1.5cm,columnsep=1.2cm}
-
-% The paracol package lets you typeset columns of text in parallel
-% \usepackage{paracol}
-\usepackage[base]{babel}
-\usepackage{lipsum}
 
 % Change the colours if you want to
 \definecolor{SlateGrey}{HTML}{2E2E2E}
@@ -118,11 +109,10 @@
 \end{nextskills}
 
 
-\begin{nextsection}{Professional Timeline}[\nextSVGIcon{email}]
+\begin{nextsection}{Experience}[\nextSVGIcon{email}]
     \begin{nexttimeline}
-        \nexttimelineevent{\textbf{June 2010} \\ New York, NY}{
-            \textbf{Bachelor's in Computer Science}
-            \vspace{0.2em}
+        \nexttimelineevent{\DateAndLocation{June 2010}{New York, NY}}{
+            \ExerienceHeading{Software Engineer}{Tech Solutions Inc.}
             \begin{itemize}[leftmargin=*,topsep=2pt,itemsep=1pt]
                 \item Specialized in Software Engineering
                 \item GPA\@: 3.8/4.0
@@ -130,10 +120,9 @@
                 \item Relevant coursework: Algorithms, Data Structures
             \end{itemize}
         }
-        
-        \nexttimelineevent{\textbf{May 2014} \\ Boston, MA}{
-            \textbf{Research Assistant --- AI Lab}
-            \vspace{0.2em}
+
+        \nexttimelineevent{\DateAndLocation{May 2014}{Boston, MA}}{
+            \ExerienceHeading{Research Assistant}{AI Lab}
             \begin{itemize}[leftmargin=*,topsep=2pt,itemsep=1pt]
                 \item Machine Learning research project
                 \item Published 2 conference papers
@@ -141,51 +130,26 @@
                 \item Mentored 3 undergraduate students
             \end{itemize}
         }
-        
-        \nexttimelineevent{\textbf{August 2015} \\ San Francisco, CA}{
-            \textbf{Software Engineer --- Tech Innovations Inc.}
-            \vspace{0.2em}
-            \begin{itemize}[leftmargin=*,topsep=2pt,itemsep=1pt]
-                \item Full-stack web development
-                \item Team lead for 3 junior developers
-                \item 40\% performance improvement
-                \item Agile/Scrum methodology
-            \end{itemize}
-        }
-        
-        \nexttimelineevent{\textbf{December 2018} \\ Remote}{
-            \textbf{Senior Software Architect --- InnovateTech Solutions}
-            \vspace{0.2em}
-            \begin{itemize}[leftmargin=*,topsep=2pt,itemsep=1pt]
-                \item Led architecture design for cloud-native applications
-                \item Managed team of 8 developers across 3 time zones
-                \item Implemented CI/CD pipelines reducing deployment time by 60\%
-                \item Introduced microservices architecture
-            \end{itemize}
-        }
     \end{nexttimeline}
 \end{nextsection}
 
-%% Depending on your tastes, you may want to make fonts of itemize environments slightly smaller
-% \AtBeginEnvironment{itemize}{\small}
 
-%% Set the left/right column width ratio to 6:4.
-% \columnratio{0.6}
-
-% % Start a 2-column paracol. Both the left and right columns will automatically
-% % break across pages if things get too long.
-% \begin{paracol}{2}
-% \cvsection{Experience}
-
-% \cvevent{Job Title 1}{Company}{Month 20XX --- Ongoing}{Location}
-% \cvsubproject{Your Project}{Your Role}{}{%
-%   \begin{itemize}%
-%   \item Project description 1
-%   \item Project description 2
-%   \end{itemize}%
-% }{C\#, {.NET}, SQLite}%
-
-% \cvsectionspace%
+\begin{nextsection}{Projects}[\nextSVGIcon{email}]
+    \begin{nexttimeline}
+        \nexttimelineevent{\DateAndLocation{June 2010}}{
+            \Heading{Name 1, Customer experience optimizer and sales management system}
+            {Your Role}{https://github.com/you/your-repository}
+            \begin{itemize}[leftmargin=*,topsep=2pt,itemsep=1pt]
+                \item Specialized in Software Engineering
+                \item GPA\@: 3.8/4.0
+                \item Dean's List all semesters
+                \item Relevant coursework: Algorithms, Data Structures
+            \end{itemize}
+            \smallskip
+            \textcolor{emphasis}{\textbf{Technologies: }}ASP.NET, Vue.js, Node.js, MS SQL
+        }
+    \end{nexttimeline}
+\end{nextsection}
 
 
 % \cvsection{Education}
@@ -213,65 +177,6 @@
 % % ONLY the current column
 % \newpage
 
-% \cvsection{Projects}
-
-% \cvproject{Name 1, Customer experience optimizer and sales management system}
-% {Your Role}{https://github.com/you/your-repository}{%
-%   \begin{itemize}%
-%     \item Project description 1
-%     \item Project description 2
-%   \end{itemize}%
-% }{ASP.NET, Vue.js, Node.js, MS SQL}%
-
-% \divider%
-
-% \cvproject{Name 2, Project title in descriptive format}
-% {}{https://github.com/you/your-repository}{%
-%   \begin{itemize}%
-%     \item Project description 1
-%     \item Project description 2
-%   \end{itemize}%
-% }{Java, React.js}%
-
-% \cvsectionspace%
-
-
-% \cvsection{Open-Source Contributions}
-
-% \cvproject{Name1, Project title in descriptive format}
-% {}{https://github.com/you/your-repository}{%
-%   \begin{itemize}%
-%     \item Project description 1
-%     \item Project description 2
-%   \end{itemize}%
-% }{Java, React.js}%
-
-% \divider%
-
-% \cvproject{Name2, Project title in descriptive format}
-% {}{https://github.com/you/your-repository}{%
-%   \begin{itemize}%
-%     \item Project description 1
-%     \item Project description 2
-%   \end{itemize}%
-% }{Java, React.js}%
-
-% %%% ==============================================================================================================
-% %% Switch to the right column. This will now automatically move to the second
-% %% page if the content is too long.
-% \switchcolumn%
-
-% \cvsection{Career Objective}
-
-% A brief statement (2--3 sentences) highlighting your key qualifications, experience, and career goals.
-
-% \cvsectionspace%
-
-% \divider\smallskip
-
-% % ONLY the current column
-% % \newpage
-
 % \cvsection{Certifications}
 
 % \cvcert{Certificate 1}{https://certificate/link/1}{Issuing Organization}
@@ -294,26 +199,6 @@
 % % \divider%
 
 % % \cvachievement{\textbf{\faIcon{heart-pulse}}}{Another achievement}{more details about it of course}
-
-
-% %% Yeah I didn't spend too much time making all the
-% %% spacing consistent... sorry. Use \smallskip, \medskip,
-% %% \bigskip, \vspace etc to make adjustments.
-% \cvsectionspace%
-
-
-% \cvsection{Referees}
-
-% \cvref{Prof.\ Alpha Beta}{Role}{Institute}{a.beta@university.edu}
-% {Address Line 1\\Address line 2}
-
-% \divider%
-
-% \cvref{Prof.\ Gamma Delta}{Role}{Institute}{g.delta@university.edu}
-% {Address Line 1\\Address line 2}
-
-
-% \end{paracol}
 
 
 \end{document}

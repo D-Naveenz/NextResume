@@ -19,10 +19,6 @@
 \ExplSyntaxOn
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 
-%% Load ragged2e for better text alignment
-\bool_new:N \g_raggedtwoe_bool
-\DeclareOption{ragged2e}{\bool_gset_true:N \g_raggedtwoe_bool}
-
 %% Load hyperref for clickable hyperlinks
 \bool_new:N \g_withhyper_bool
 \DeclareOption{withhyper}{\bool_gset_true:N \g_withhyper_bool}
@@ -93,9 +89,10 @@
 %% 10. ACCESSIBILITY AND COMPATIBILITY
 \RequirePackage{accsupp}       % Accessibility support for screen readers
 
-\ExplSyntaxOn
 %% 11. TEXT ALIGNMENT (Load after other text packages)
-\bool_if:NT \g_raggedtwoe_bool {\RequirePackage[newcommands]{ragged2e}}
+\RequirePackage[newcommands]{ragged2e} % Better text alignment - always enabled
+
+\ExplSyntaxOn
 
 %% ============================================================================
 %% PACKAGE CONFIGURATION
@@ -145,13 +142,21 @@
 
 % Define styles for markers
 \newcommand{\nextItemMarker}{{\small\textbullet}}
-\newcommand{\nextRatingMarker}{\nextSVGIcon{circle}}
-\newcommand{\nextDateMarker}{\faIcon{calendar}}
-\newcommand{\nextLocationMarker}{\textbf{\faIcon{map-marker-alt}}}
-\newcommand{\nextCertificateMarker}{\textbf{\faIcon{certificate}}}
-\newcommand{\nextProjectLinkMarker}{\faIcon[brands]{github}}
-\newcommand{\nextProjectRoleMarker}{\textbf{\faIcon{user}}}
-\newcommand{\nextProjectMarker}{\textbf{\faIcon{folder}}}
+
+% Define all marker symbols once to avoid repeated processing
+% All markers are processed at document start for maximum efficiency
+\AtBeginDocument{%
+  % SVG-based markers
+  \def\nextRatingMarker{\nextSVGIcon{circle}}%
+  \def\nextProjectLinkMarker{\nextSVGIcon{github}[1em]}%
+  \def\nextProjectRoleMarker{\nextSVGIcon{github}[1em]}%
+
+  % FontAwesome markers (to be replaced with SVG icons later)
+  \def\nextDateMarker{\faIcon{calendar}}%
+  \def\nextLocationMarker{\textbf{\faIcon{map-marker-alt}}}%
+  \def\nextCertificateMarker{\textbf{\faIcon{certificate}}}%
+  \def\nextProjectMarker{\textbf{\faIcon{folder}}}%
+}
 
 % Define text styles
 \newcommand{\nextNameStyle}[1]{{\Huge\bfseries\color{name}#1}}%
@@ -400,106 +405,96 @@
 
 % Timeline environment with dynamic width calculation
 \newenvironment{nexttimeline}{%
-    \setcounter{timelineevent}{0}
-    \def\lastbottom{0}% Initialize bottom position tracker
-    
-    % Calculate dynamic widths based on available space
-    \pgfmathsetmacro{\datewidth}{2.3}% Date column width in cm
-    \pgfmathsetmacro{\timelinegap}{0.5}% Gap from center to date (left side)
-    \pgfmathsetmacro{\eventgap}{1}% Gap from center to event (right side)  
-    \pgfmathsetmacro{\timelinethickness}{0.1}% Timeline thickness in cm
-    \pgfmathsetmacro{\eventpadding}{0.3}% Internal padding for event box
-    \pgfmathsetmacro{\safemargin}{0.2}% Safety margin to prevent overfull boxes
-    
-    % Calculate available width for event box
-    % Total available = \linewidth - date width - gaps - timeline thickness - padding - safety margin
-    \pgfmathsetmacro{\availablewidth}{\linewidth/1cm - \datewidth - \timelinegap - \eventgap - \timelinethickness - 2*\eventpadding - \safemargin}
-    \pgfmathsetmacro{\eventtextwidth}{\availablewidth - 0.4}% Subtract for borders
-    
-    % Declare layers before starting tikzpicture
-    \pgfdeclarelayer{background}% For timeline
-    \pgfdeclarelayer{circles}% For both big and small circles
-    \pgfsetlayers{background,circles,main}%
-    \begin{tikzpicture}[
-        % These styles apply to ALL elements in this tikzpicture
-        event/.style={
-            rectangle, 
-            draw=accent!60, 
-            fill=body!5, 
-            thick,
-            minimum width=\availablewidth cm,
-            text width=\eventtextwidth cm,
-            align=left,
-            rounded corners=4pt,
-            inner sep=\eventpadding cm
-        },
-        date/.style={
-            text width=\datewidth cm,
-            align=right,
-            anchor=east,
-            font=\small\bfseries\color{accent}
-        },
-        timeline/.style={
-            draw=accent!80, 
-            thick, 
-            line width=2pt
-        },
-        dot/.style={
-            circle,
-            fill=accent,
-            minimum size=8pt,
-            inner sep=0pt
-        },
-        bigcircle/.style={
-            circle,
-            draw=accent,
-            fill=white,
-            thick,
-            minimum size=15pt,
-            inner sep=0pt
-        }
-    ]
-    % Initialize timeline bounds tracking
-    \def\timelinetop{0.8}% Start above first event (using eventspacing value)
-    \def\timelinebottom{-0.8}% Will be updated as events are added
-}{
-    % Draw everything at the end
-    \ifnum\thetimelineevent>0%
-        % LAYER 1: Draw timeline on background layer (behind everything)
-        \begin{pgfonlayer}{background}
-            \draw[timeline] (0,\timelinetop) -- (0,\timelinebottom);
-        \end{pgfonlayer}
-    \fi
-    \end{tikzpicture}
-}
+  \setcounter{timelineevent}{0}
+  \def\lastbottom{0}% Initialize bottom position tracker
+  
+  % Calculate dynamic widths based on available space
+  \pgfmathsetmacro{\datewidth}{2.3}% Date column width in cm
+  \pgfmathsetmacro{\timelinegap}{0.5}% Gap from center to date (left side)
+  \pgfmathsetmacro{\eventgap}{1}% Gap from center to event (right side)  
+  \pgfmathsetmacro{\timelinethickness}{0.1}% Timeline thickness in cm
+  \pgfmathsetmacro{\eventpadding}{0.3}% Internal padding for event box
+  \pgfmathsetmacro{\safemargin}{0.2}% Safety margin to prevent overfull boxes
+  
+  % Calculate available width for event box
+  % Total available = \linewidth - date width - gaps - timeline thickness - padding - safety margin
+  \pgfmathsetmacro{\availablewidth}{\linewidth/1cm - \datewidth - \timelinegap - \eventgap - \timelinethickness - 2*\eventpadding - \safemargin}
+  \pgfmathsetmacro{\eventtextwidth}{\availablewidth - 0.4}% Subtract for borders
+  
+  % Declare layers before starting tikzpicture
+  \pgfdeclarelayer{background}% For timeline
+  \pgfdeclarelayer{circles}% For both big and small circles
+  \pgfsetlayers{background,circles,main}%
+  \begin{tikzpicture}[
+    % These styles apply to ALL elements in this tikzpicture
+    event/.style={
+      rectangle, 
+      draw=accent!60, 
+      fill=body!5, 
+      thick,
+      minimum width=\availablewidth cm,
+      text width=\eventtextwidth cm,
+      align=left,
+      rounded corners=4pt,
+      inner sep=\eventpadding cm
+    },
+    date/.style={
+      text width=\datewidth cm,
+      align=right,
+      anchor=east,
+      font=\color{emphasis}
+    },
+    timeline/.style={
+      draw=accent!80, 
+      thick, 
+      line width=2pt
+    },
+    dot/.style={
+      circle,
+      fill=accent,
+      minimum size=8pt,
+      inner sep=0pt
+    },
+    bigcircle/.style={
+      circle,
+      draw=accent,
+      fill=white,
+      thick,
+      minimum size=15pt,
+      inner sep=0pt
+    }
+  ]
+  % Initialize timeline bounds tracking
+  \def\timelinetop{0.8}% Start above first event (using eventspacing value)
+  \def\timelinebottom{-0.8}% Will be updated as events are added
 
-% Command to add timeline events
-\newcommand{\nexttimelineevent}[2]{%
+  % Command to add timeline events
+  \newcommand{\nexttimelineevent}[2]{%
     \stepcounter{timelineevent}%
     % Calculate position based on previous event's bottom plus spacing
     \pgfmathsetmacro{\eventspacing}{0.8}% Spacing between events in cm
     
     % For first event, use initial position; for subsequent events, use last bottom minus spacing
     \ifnum\thetimelineevent=1%
-        \pgfmathsetmacro{\ypos}{0}%
+      \pgfmathsetmacro{\ypos}{0}%
     \else%
-        \pgfmathsetmacro{\ypos}{\lastbottom - \eventspacing}%
+      \pgfmathsetmacro{\ypos}{\lastbottom - \eventspacing}%
     \fi
     
     \coordinate (pos\thetimelineevent) at (0,\ypos);
     
     % Date/location node (left side) - use calculated gap
-    \node[date, anchor=north east] (date\thetimelineevent) at ($(pos\thetimelineevent) + (-\timelinegap,0)$) {#1};
+    \node[date, anchor=north east] (date\thetimelineevent) at ($(pos\thetimelineevent) + (-\timelinegap,0)$) {##1};
     
     % Content node (right side) - use calculated gap
-    \node[event, anchor=north west] (event\thetimelineevent) at ($(pos\thetimelineevent) + (\eventgap,0)$) {#2};
+    \node[event, anchor=north west] (event\thetimelineevent) at ($(pos\thetimelineevent) + (\eventgap,0)$) {##2};
     
     % Draw circles on the circles layer
     \begin{pgfonlayer}{circles}
-        % Big circle with white fill covers the timeline
-        \node[bigcircle] at (0, 0 |- date\thetimelineevent.center) {};
-        % Small dot on top of big circle
-        \node[dot] at (0, 0 |- date\thetimelineevent.center) {};
+      % Big circle with white fill covers the timeline
+      \node[bigcircle] at (0, 0 |- date\thetimelineevent.center) {};
+      % Small dot on top of big circle
+      \node[dot] at (0, 0 |- date\thetimelineevent.center) {};
     \end{pgfonlayer}
     
     % Update the bottom position for next event
@@ -516,45 +511,34 @@
     % Update timeline bottom to extend below the last event
     \pgfmathsetmacro{\newtimelinebottom}{\tempbottom - \eventspacing}
     \xdef\timelinebottom{\newtimelinebottom}
-}
+  }
 
-\newcommand{\cvsubsection}[1]{%
-  \smallskip%
-  {\color{subheading}\cvsubsectionfont{#1}\par}\medskip
-}
+  \NewDocumentCommand{\DateAndLocation}{m O{}}{%
+    \textbf{##1} \\ {\small##2}%
+  }
 
-\newcommand{\cvevent}[4]{%
-  {\large\bfseries\color{emphasis}#1\par}
-  \smallskip\normalsize
-  \ifstrequal{#2}{}{}{
-    \textbf{\color{subheading}#2}\par
-    \smallskip}
-  \ifstrequal{#3}{}{}{%
-    {\small\color{emphasis}\makebox[0.5\linewidth][l]%
-        {\BeginAccSupp{method=pdfstringdef,ActualText={\datename:}}\nextDateMarker\EndAccSupp{}%
-          ~\normalfont#3}%
-      }}%
-  \ifstrequal{#4}{}{}{%
-    {\small\color{emphasis}\makebox[0.5\linewidth][r]%
-        {\BeginAccSupp{method=pdfstringdef,ActualText={\locationname:}}\nextLocationMarker\EndAccSupp{}%
-          ~\normalfont#4}%
-      }}\par
-  \medskip\normalsize
-}
+  \newcommand{\ExerienceHeading}[2]{
+    {\large\bfseries\color{emphasis}##1}\par
+    \smallskip
+    \ifstrequal{##2}{}{}{%
+      \normalsize\textbf{\color{subheading}##2}\par
+      \smallskip
+    }%
+  }
 
-\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
-\newcommand{\cvproject}[5]{%
-  %% Header
-  {
+  \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+  \newcommand{\Heading}[3]{%
+    %% Header
+    {
       \setsepchar{,}%  
-      \readlist*\titlelist{#1}%
+      \readlist*\titlelist{##1}%
       %% Check tiltlelist has more than 1 elements
       \ifnum\titlelistlen>1
         \begin{tabularx}{\columnwidth}{@{}l | Y@{}}
           \large\textcolor{subheading}{\textbf{\titlelist[1]}} & \textcolor{emphasis}{\textbf{\titlelist[2]}} \\
         \end{tabularx}\par
       \else
-        \large\textcolor{emphasis}{\textbf{#1}}\par
+        \large\textcolor{emphasis}{\textbf{##1}}\par
       \fi
       \smallskip\normalsize
       \let\titlelist\relax
@@ -563,70 +547,31 @@
     {%
       {\small\color{emphasis}\makebox[0.5\linewidth][l]%
           {\BeginAccSupp{method=pdfstringdef,ActualText={\rolename:}}\nextProjectRoleMarker\EndAccSupp{}%
-            ~\normalfont\ifstrequal{#2}{}{Personal Project}{#2}}%
+            ~\normalfont\ifstrequal{##2}{}{Personal Project}{##2}}%
         }%
     }%
-  %% Project Link
-  \ifstrequal{#3}{}{}{%
-    % The parsing-separator⟨delimiter⟩“/” is reserved by default for nested lists
-    %  To set “/” as the ⟨parsing-separator⟩ for a simple list, it is necessary, using the optional argument
-    \setsepchar[,]{/}%
-    \readlist*\urllist{#3}%
-    {\small\color{emphasis}\makebox[0.5\linewidth][r]%
-      {\BeginAccSupp{method=pdfstringdef,ActualText={\projectlink:}}\nextProjectLinkMarker\EndAccSupp{}%
-        ~\normalfont\href{#3}{\textbf{GitHub: }\urllist[-1]}}%
-    }%
-    \let\urllist\relax
-  }\par\smallskip
-  %% Description
-  \ifstrequal{#4}{}{}{%
-    \smallskip
-    \small{#4}
-  }
-  %% Technologies
-  \ifstrequal{#5}{}{}{%
-    \smallskip
-    \textcolor{emphasis}{\textbf{Technologies: }} #5
-  }
-  \medskip\normalsize
-}
-
-\newcommand{\cvsubproject}[5]{%
-  \smallskip
-  \begin{spacing}{1.5}
-    {%
-      \small\color{emphasis}%
-      \begin{tabularx}{\columnwidth}{@{}m{1.2em} @{\hspace{1ex}} Y@{}}
-        %% Project
-        \BeginAccSupp{method=pdfstringdef,ActualText={\detokenize{[project icon]}}}\nextProjectMarker\EndAccSupp{}  & \textbf{Project: }#1                                   \\
-        %% Role
-        \BeginAccSupp{method=pdfstringdef,ActualText={\detokenize{[role icon]}}}\nextProjectRoleMarker\EndAccSupp{} & \textbf{Role: }\ifstrequal{#2}{}{Personal Project}{#2} \\
-      \end{tabularx}\par%
-      %% Project Link
-      \ifstrequal{#3}{}{}
-      {%
-        % The parsing-separator⟨delimiter⟩“/” is reserved by default for nested lists
-        %  To set “/” as the ⟨parsing-separator⟩ for a simple list, it is necessary, using the optional argument
-        \setsepchar[,]{/}%
-        \readlist*\urllist{#3}%
-        \begin{tabularx}{\columnwidth}{@{}m{1.2em} @{\hspace{1ex}} >{\raggedright\arraybackslash}X@{}}
-          \BeginAccSupp{method=pdfstringdef,ActualText={\detokenize{[github icon]}}}\nextProjectLinkMarker\EndAccSupp{} & \href{#3}{\textbf{GitHub: }\urllist[-1]} \\
-        \end{tabularx}%
-        \let\urllist\relax
+    %% [Optional] Project Link (If this is a project heading)
+    \ifstrequal{##3}{}{}{%
+      % The parsing-separator⟨delimiter⟩“/” is reserved by default for nested lists
+      %  To set “/” as the ⟨parsing-separator⟩ for a simple list, it is necessary, using the optional argument
+      \setsepchar[,]{/}%
+      \readlist*\urllist{##3}%
+      {\small\color{emphasis}\makebox[0.5\linewidth][r]%
+        {\BeginAccSupp{method=pdfstringdef,ActualText={\projectlink:}}\nextProjectLinkMarker\EndAccSupp{}%
+          ~\normalfont\href{##3}{\textbf{GitHub: }\urllist[-1]}}%
       }%
-    }%
-  \end{spacing}
-  %% Description
-  \ifstrequal{#4}{}{}{%
-    \smallskip
-    \small{#4}
-  }
-  %% Technologies
-  \ifstrequal{#5}{}{}{%
-    \smallskip
-    \textcolor{emphasis}{\textbf{Technologies: }} #5
-  }
-  \medskip\normalsize
+      \let\urllist\relax
+    }\par\smallskip
+  }%
+}{
+  % Draw everything at the end
+  \ifnum\thetimelineevent>0%
+    % LAYER 1: Draw timeline on background layer (behind everything)
+    \begin{pgfonlayer}{background}
+      \draw[timeline] (0,\timelinetop) -- (0,\timelinebottom);
+    \end{pgfonlayer}
+  \fi
+  \end{tikzpicture}
 }
 
 % adds accsupp for the icon as well
@@ -649,19 +594,6 @@
 \newcommand{\cvtag}[1]{%
   \tikz[baseline]\node[anchor=base,draw=body!30,rounded corners,inner xsep=1ex,inner ysep =0.75ex,text height=1.5ex,text depth=.25ex]{#1};
 }
-
-\newcommand{\cvref}[4]{%
-  \smallskip
-  \textcolor{emphasis}{\textbf{#1}}\par
-  \textbf{\color{subheading}#2}\par
-  \begin{description}[font=\color{accent},style=multiline,leftmargin=1.35em,align=left]
-    \item[\small\normalfont\textbf{\faIcon{briefcase}}] #3
-    \item[\small\normalfont\faIcon{at}] #4
-  \end{description}
-  %   \medskip
-}
-
-\newenvironment{cvcolumn}[1]{\begin{minipage}[t]{#1}\raggedright}{\end{minipage}}
 
 \AddToHook{begindocument/before}{%
   \pagestyle{empty}
