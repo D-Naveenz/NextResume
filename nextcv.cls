@@ -32,44 +32,87 @@
 \DeclareOption{fieldnames}{\bool_gset_true:N \g_fieldnames_bool}
 
 \ProcessOptions\relax
+\ExplSyntaxOff
 
 \LoadClass{article}
 
-% Load Lua support
-\RequirePackage{luacode}
-%% Make files more 'friendly' with copy-paste etc
-\RequirePackage{xparse}
+%% ============================================================================
+%% PACKAGE LOADING - ORDERED BY PRIORITY AND DEPENDENCIES
+%% ============================================================================
 
+%% 1. FOUNDATION PACKAGES (Must load first)
+% Lua support - Required for LuaTeX functionality
+\RequirePackage{luacode}
+
+% L3 programming layer extensions (xparse is now part of LaTeX kernel as of 2020)
+% Note: xparse is loaded automatically in modern LaTeX, but we keep it for compatibility
+
+%% 2. FONT AND ENGINE-SPECIFIC PACKAGES
+% Font specification package for XeLaTeX/LuaLaTeX
+\RequirePackage{fontspec}
+
+%% 3. GEOMETRY AND PAGE LAYOUT (Before hyperref)
+\RequirePackage[margin=2cm]{geometry}
+
+%% 4. HYPERREF AND METADATA (Must be loaded early, but after geometry)
 % Set hyperref options before loading the package to avoid duplicate option warnings
+\ExplSyntaxOn
 \bool_if:NT \g_withhyper_bool {
   \PassOptionsToPackage{colorlinks=true}{hyperref}
 }
+\ExplSyntaxOff
 
-\RequirePackage{hyperref,hyperxmp,setspace}
-\RequirePackage[margin=2cm]{geometry}
+\RequirePackage{hyperref}      % Hyperlinks and PDF features
+\RequirePackage{hyperxmp}      % XMP metadata support
+\RequirePackage{setspace}      % Line spacing control
 
+%% 5. GRAPHICS AND COLOR PACKAGES
+\RequirePackage{xcolor}        % Color definitions (must load before tikz)
+\RequirePackage{graphicx}      % Image inclusion
+\RequirePackage{tikz}          % TikZ graphics
+\usetikzlibrary{calc, arrows.meta, positioning, shapes}          % TikZ libraries for timeline
+
+%% 6. ADVANCED GRAPHICS PACKAGES (After basic graphics)
+\RequirePackage{svg}           % SVG support (requires graphicx)
+\RequirePackage[export]{adjustbox} % Advanced image adjustments (requires graphicx)
+
+%% 7. MATH AND CALCULATION PACKAGES
+% \RequirePackage{xfp}           % Floating point math (L3 layer - replaces pgfmath for most calculations)
+
+%% 8. TEXT AND LAYOUT PACKAGES
+\RequirePackage{array}         % Extended array and tabular (load before tabularx)
+\RequirePackage{multirow}      % Multirow table cells
+\RequirePackage{tabularx}      % Extended tabular with X columns (requires array)
+\RequirePackage{tabularray}    % Modern table formatting (alternative to tabularx)
+\RequirePackage{multicol}      % Multiple columns
+\RequirePackage[inline]{enumitem} % Enhanced lists
+
+%% 9. UTILITY AND STRING PROCESSING PACKAGES  
+\RequirePackage{listofitems}   % String splitting utilities (modern alternative to some ifthen uses)
+
+%% 10. ACCESSIBILITY AND COMPATIBILITY
+\RequirePackage{accsupp}       % Accessibility support for screen readers
+
+\ExplSyntaxOn
+%% 11. TEXT ALIGNMENT (Load after other text packages)
 \bool_if:NT \g_raggedtwoe_bool {\RequirePackage[newcommands]{ragged2e}}
 
-% Load required packages
-\RequirePackage{fontspec}
-\RequirePackage{multicol}
+%% ============================================================================
+%% PACKAGE CONFIGURATION
+%% ============================================================================
 
 % Configure multicols spacing to reduce gaps
 \setlength{\multicolsep}{0.5\baselineskip} % this can be adjusted (ex: 0.5\baselineskip plus 0.2\baselineskip minus 0.1\baselineskip)
 \setlength{\columnsep}{1.2em}    % Space between columns
 
-\RequirePackage{graphicx}        % For image inclusion and clipping
-\RequirePackage{svg}             %  pass svg options to package graphicx
-\RequirePackage[export]{adjustbox} % For advanced image adjustments like clipbox
-\RequirePackage{xcolor}          % For color definitions (e.g., \color{accent})
-\RequirePackage{pgffor}          % For \foreach loops
-\RequirePackage{ifthen}          % For conditional logic (optional but useful)
-\RequirePackage{accsupp}         % For accessibility support (e.g., screen readers)
-\RequirePackage{xfp}             % For floating point math (more reliable than \ifdim)
-\RequirePackage{tabularray}      % For the tblr environment (modern table formatting)
+% Configure enumitem for consistent list formatting
+\setlist{leftmargin=*,labelsep=0.5em,nosep,itemsep=0.25\baselineskip,after=\vspace{0.25\baselineskip}}
 
-% Change the font if you want to, depending on whether you're using xelatex/lualatex
-% Here we set Aptos (the default Microsoft font) as the main font for the Next Resume theme
+%% ============================================================================
+%% FONT SETUP (After fontspec is loaded)
+%% ============================================================================
+
+% Set Aptos as the main font for the Next Resume theme
 \setmainfont{Aptos}[
   Path           =./fonts/Aptos/,
   Extension      =.ttf,
@@ -79,6 +122,7 @@
   BoldItalicFont =*-Bold-Italic,
 ]
 
+% Define Montserrat as header font family
 \newfontfamily\headerfont{Montserrat}[
   Path           =./fonts/Montserrat/static/,
   Extension      =.ttf,
@@ -116,15 +160,8 @@
 \newcommand{\nextHeadingStyle}[1]{{\LARGE\bfseries\color{heading}#1}}%
 \newcommand{\nextSubheadingStyle}[1]{{\Large\bfseries\color{heading}#1}}%
 
-% Customize itemize and enumerate environments
-\RequirePackage[inline]{enumitem}
-\setlist{leftmargin=*,labelsep=0.5em,nosep,itemsep=0.25\baselineskip,after=\vspace{0.25\baselineskip}}
+% Configure itemize marker (enumitem already loaded above)
 \setlist[itemize]{label=\nextItemMarker}
-
-\RequirePackage{tikz}
-\RequirePackage{multirow,tabularx}
-\RequirePackage{listofitems} % String splitter
-\RequirePackage{array}
 
 \NewDocumentCommand{\nextSVGIcon}{m O{1.2em}}{%
   \begingroup%
@@ -236,24 +273,6 @@
 \newcommand{\cvsectionfont}{\LARGE\bfseries}
 \newcommand{\cvsubsectionfont}{\large\bfseries}
 
-% The default section environment with optional icon
-\NewDocumentEnvironment{nextsection}{m O{}}{%
-  \par\vspace{1.5\baselineskip}\noindent % Add vertical space
-  % Add the section title in a table to align with the icon if provided
-  \IfValueTF{#2}{%
-    \begin{tblr}{stretch = 0, colspec = {Q[h,l]l}, colsep=0.4em}%
-      #2 & \nextHeadingStyle{#1}\\
-    \end{tblr}%
-  }{%
-    \nextHeadingStyle{\MakeUppercase{#1}}
-  }%
-  % Add a horizontal rule rest of the line
-  \hspace{2ex}{\color{headingrule}\hrulefill}
-  \par\vspace{0.5\baselineskip} % Add some space after the section heading
-}{%
-  \par
-}%
-
 % Resume Header Environment
 \NewDocumentEnvironment{resumeheader}{ O{3} }{%
   % Support for multiple photos
@@ -312,6 +331,24 @@
   \endgroup
 }
 
+% The default section environment with optional icon
+\NewDocumentEnvironment{nextsection}{m O{}}{%
+  \par\vspace{1.5\baselineskip}\noindent % Add vertical space
+  % Add the section title in a table to align with the icon if provided
+  \IfValueTF{#2}{%
+    \begin{tblr}{stretch = 0, colspec = {Q[h,l]l}, colsep=0.4em}%
+      #2 & \nextHeadingStyle{#1}\\
+    \end{tblr}%
+  }{%
+    \nextHeadingStyle{\MakeUppercase{#1}}
+  }%
+  % Add a horizontal rule rest of the line
+  \hspace{2ex}{\color{headingrule}\hrulefill}
+  \par\vspace{0.5\baselineskip} % Add some space after the section heading
+}{%
+  \par
+}%
+
 % Resume Skills Environment. Use \columnbreak to break columns manually.
 % Parameters: [number of columns (default 1)]
 \NewDocumentEnvironment{nextskills}{ O{1} }{%
@@ -356,6 +393,114 @@
     \end{multicols}%
   \end{nextsection}%
 }%
+
+% Page-breakable timeline implementation
+% Counter for timeline events
+\newcounter{timelineevent}
+
+% Timeline environment that supports page breaks
+\newenvironment{nexttimeline}{%
+    \setcounter{timelineevent}{0}
+    
+    % Calculate dynamic widths based on available space (same as before)
+    \pgfmathsetmacro{\datewidth}{2.3}% Date column width in cm
+    \pgfmathsetmacro{\timelinegap}{0.5}% Gap from center to date (left side)
+    \pgfmathsetmacro{\eventgap}{1}% Gap from center to event (right side)  
+    \pgfmathsetmacro{\timelinethickness}{0.1}% Timeline thickness in cm
+    \pgfmathsetmacro{\eventpadding}{0.3}% Internal padding for event box
+    \pgfmathsetmacro{\safemargin}{0.2}% Safety margin to prevent overfull boxes
+    
+    % Calculate available width for event box
+    \pgfmathsetmacro{\availablewidth}{\linewidth/1cm - \datewidth - \timelinegap - \eventgap - \timelinethickness - 2*\eventpadding - \safemargin}
+    \pgfmathsetmacro{\eventtextwidth}{\availablewidth - 0.4}% Subtract for borders
+    
+    % Store the timeline parameters globally for use in timeline events
+    \xdef\timeline@datewidth{\datewidth}
+    \xdef\timeline@timelinegap{\timelinegap}
+    \xdef\timeline@eventgap{\eventgap}
+    \xdef\timeline@availablewidth{\availablewidth}
+    \xdef\timeline@eventtextwidth{\eventtextwidth}
+    \xdef\timeline@eventpadding{\eventpadding}
+    
+    % Initialize first event flag
+    \global\let\timeline@isfirst\@empty
+}{%
+    % No closing tikzpicture needed since each event is independent
+}
+
+% Command to add timeline events (each event is now a separate tikzpicture)
+\newcommand{\nexttimelineevent}[2]{%
+    \stepcounter{timelineevent}%
+    
+    % Add spacing before each event (except the first)
+    \ifx\timeline@isfirst\@empty
+        \global\def\timeline@isfirst{done}% Mark that we've seen the first event
+    \else
+        \vspace{0.5em}% Space between events
+    \fi
+    
+    % Create individual tikzpicture for this event (allows page breaks between events)
+    \noindent\begin{tikzpicture}[
+        overlay,
+        remember picture,
+        event/.style={
+            rectangle, 
+            draw=accent!60, 
+            fill=body!5, 
+            thick,
+            minimum width=\timeline@availablewidth cm,
+            text width=\timeline@eventtextwidth cm,
+            align=left,
+            rounded corners=4pt,
+            inner sep=\timeline@eventpadding cm
+        },
+        date/.style={
+            text width=\timeline@datewidth cm,
+            align=right,
+            anchor=east,
+            font=\small\bfseries\color{accent}
+        },
+        timeline/.style={
+            draw=accent!80, 
+            thick, 
+            line width=2pt
+        },
+        dot/.style={
+            circle,
+            fill=accent,
+            minimum size=8pt,
+            inner sep=0pt
+        },
+        bigcircle/.style={
+            circle,
+            draw=accent,
+            fill=white,
+            thick,
+            minimum size=15pt,
+            inner sep=0pt
+        }
+    ]
+        % Reference point for this event
+        \coordinate (eventref) at (0,0);
+        
+        % Date/location node (left side)
+        \node[date, anchor=east] (datebox) at (-\timeline@timelinegap, 0) {#1};
+        
+        % Content node (right side)
+        \node[event, anchor=west] (eventbox) at (\timeline@eventgap, 0) {#2};
+        
+        % Timeline segment - draw a line that extends above and below this event
+        \draw[timeline] (0, 1em) -- (0, -1em);
+        
+        % Timeline circles
+        \node[bigcircle] at (0, 0) {};
+        \node[dot] at (0, 0) {};
+        
+    \end{tikzpicture}%
+    
+    % Reserve space for the content (make sure the content doesn't overlap)
+    \vspace{\dimexpr\baselineskip+0.5em\relax}% Adjust this based on your content
+}
 
 \newcommand{\cvsubsection}[1]{%
   \smallskip%
