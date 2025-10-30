@@ -1,6 +1,4 @@
 -- NextResume Lua implementation of TokenGrid
-local modulename = "Next TokenGrid"
-
 -- TokenGrid class definition
 local TokenGrid = {}
 TokenGrid.__index = TokenGrid
@@ -128,18 +126,18 @@ function TokenGrid:build_grid(num_columns)
   for i, field in ipairs(self.fields) do
     table.insert(result, field)
 
-    if i < #self.fields then
-      if i % num_columns == 0 then
+    -- Add column separator or row ending
+    if i % num_columns == 0 then
+      -- End of row - only add \\ if not the last row
+      if i < #self.fields then
         table.insert(result, [[ \\ ]])
-      else
+      end
+    else
+      -- Not end of row - add column separator if not the last field
+      if i < #self.fields then
         table.insert(result, " & ")
       end
     end
-  end
-
-  -- Close the last row if needed
-  if #self.fields % num_columns ~= 0 then
-    table.insert(result, [[ \\ ]])
   end
 
   table.insert(result, [[\end{tabular*}]])

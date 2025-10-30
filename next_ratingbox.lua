@@ -1,6 +1,4 @@
 -- next_ratingbox.lua
-local modulename = "Next RatingBox"
-
 local RatingBox = {}
 RatingBox.__index = RatingBox
 

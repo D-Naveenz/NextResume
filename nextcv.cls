@@ -151,11 +151,15 @@
   \def\nextProjectLinkMarker{\nextSVGIcon{github}[1em]}%
   \def\nextProjectRoleMarker{\nextSVGIcon{github}[1em]}%
 
-  % FontAwesome markers (to be replaced with SVG icons later)
-  \def\nextDateMarker{\faIcon{calendar}}%
-  \def\nextLocationMarker{\textbf{\faIcon{map-marker-alt}}}%
-  \def\nextCertificateMarker{\textbf{\faIcon{certificate}}}%
-  \def\nextProjectMarker{\textbf{\faIcon{folder}}}%
+  % FontAwesome markers (replaced with text placeholders due to font issues)
+  \def\nextDateMarker{\textbf{📅}}%
+  \def\nextLocationMarker{\textbf{📍}}%
+  \def\nextCertificateMarker{\textbf{🏆}}%
+  \def\nextProjectMarker{\textbf{📁}}%
+  
+  % Accessibility text for screen readers
+  \def\rolename{Role}%
+  \def\projectlink{Project Link}%
 }
 
 % Define text styles
@@ -235,12 +239,6 @@
 \def\@name{}
 \def\@jobtitle{}
 
-%% Define field names for accessibility
-\newcommand{\datename}{Date}
-\newcommand{\locationname}{Location}
-\newcommand{\rolename}{Role}
-\newcommand{\projectlink}{Project Link}
-
 % Set PDF metadata using hyperref and hyperxmp
 % Parameters: <author name> <job title>
 \newcommand{\resume@SetMetadata}[2]{%
@@ -268,13 +266,6 @@
 
 \ExplSyntaxOff
 
-%% utils
-\newenvironment{fullwidth}{%
-  \begin{adjustwidth}{}{\dimexpr-\marginparwidth-\marginparsep\relax}
-}{%
-  \end{adjustwidth}
-}
-
 \newcommand{\cvsectionfont}{\LARGE\bfseries}
 \newcommand{\cvsubsectionfont}{\large\bfseries}
 
@@ -283,6 +274,8 @@
   % Support for multiple photos
   \newlength{\resume@profilephoto@width}
   \newlength{\resume@profilephoto@hspace}
+  \setlength{\resume@profilephoto@width}{0pt}% Initialize to zero
+  \setlength{\resume@profilephoto@hspace}{0pt}% Initialize to zero
   \def\resume@profilephoto{}
 
   % Helper command for making a photo in resumeheader
@@ -514,7 +507,7 @@
     \textbf{##1} \\ {\small##2}%
   }
 
-  \newcommand{\ExerienceHeading}[2]{
+  \newcommand{\ExperienceHeading}[2]{
     {\large\bfseries\color{emphasis}##1}\par
     \smallskip
     \ifstrequal{##2}{}{}{%
