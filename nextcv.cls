@@ -187,6 +187,7 @@
 \begin{luacode*}
   -- Load LUA libraries
   TokenGrid = require("next_tokengrid")
+  Utils = require("next_utils")
 
   -- Create a new TokenGrid instance for personal info
   next_personal_info = TokenGrid:new("\\resume@hidefieldnamesvalue", "\\resume@withhypervalue")
@@ -263,9 +264,6 @@
 }
 
 \ExplSyntaxOff
-
-\newcommand{\cvsectionfont}{\LARGE\bfseries}
-\newcommand{\cvsubsectionfont}{\large\bfseries}
 
 % Resume Header Environment
 \NewDocumentEnvironment{resumeheader}{ O{3} }{%
@@ -428,6 +426,10 @@
   \end{nextsection}%
 }%
 
+%% ============================================================================
+%% Timeline Environment
+%% ============================================================================
+
 % Counter for timeline events
 \newcounter{timelineevent}
 
@@ -437,7 +439,7 @@
   \def\lastbottom{0}% Initialize bottom position tracker
   
   % Calculate dynamic widths based on available space
-  \pgfmathsetmacro{\datewidth}{2.3}% Date column width in cm
+  \pgfmathsetmacro{\datewidth}{2.8}% Date column width in cm
   \pgfmathsetmacro{\timelinegap}{0.5}% Gap from center to date (left side)
   \pgfmathsetmacro{\eventgap}{0.8}% Gap from center to event (right side)  
   \pgfmathsetmacro{\timelinethickness}{0.1}% Timeline thickness in cm
@@ -538,57 +540,6 @@
     \pgfmathsetmacro{\newtimelinebottom}{\tempbottom - \eventspacing}
     \xdef\timelinebottom{\newtimelinebottom}
   }
-
-  \NewDocumentCommand{\DateAndLocation}{m O{}}{%
-    \textbf{##1} \\ {\small##2}%
-  }
-
-  \newcommand{\ExperienceHeading}[2]{
-    {\large\bfseries\color{emphasis}##1}\par
-    \smallskip
-    \ifstrequal{##2}{}{}{%
-      \normalsize\textbf{\color{subheading}##2}\par
-      \smallskip
-    }%
-  }
-
-  \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
-  \newcommand{\Heading}[3]{%
-    %% Header
-    {
-      \setsepchar{,}%  
-      \readlist*\titlelist{##1}%
-      %% Check tiltlelist has more than 1 elements
-      \ifnum\titlelistlen>1
-        \begin{tabularx}{\columnwidth}{@{}l | Y@{}}
-          \large\textcolor{subheading}{\textbf{\titlelist[1]}} & \textcolor{emphasis}{\textbf{\titlelist[2]}} \\
-        \end{tabularx}\par
-      \else
-        \large\textcolor{emphasis}{\textbf{##1}}\par
-      \fi
-      \smallskip\normalsize
-      \let\titlelist\relax
-    }
-    %% Role
-    {%
-      {\small\color{emphasis}\makebox[0.5\linewidth][l]%
-          {\BeginAccSupp{method=pdfstringdef,ActualText={\rolename:}}\nextProjectRoleMarker\EndAccSupp{}%
-            ~\normalfont\ifstrequal{##2}{}{Personal Project}{##2}}%
-        }%
-    }%
-    %% [Optional] Project Link (If this is a project heading)
-    \ifstrequal{##3}{}{}{%
-      % The parsing-separator⟨delimiter⟩“/” is reserved by default for nested lists
-      %  To set “/” as the ⟨parsing-separator⟩ for a simple list, it is necessary, using the optional argument
-      \setsepchar[,]{/}%
-      \readlist*\urllist{##3}%
-      {\small\color{emphasis}\makebox[0.5\linewidth][r]%
-        {\BeginAccSupp{method=pdfstringdef,ActualText={\projectlink:}}\nextProjectLinkMarker\EndAccSupp{}%
-          ~\normalfont\href{##3}{\textbf{GitHub: }\urllist[-1]}}%
-      }%
-      \let\urllist\relax
-    }\par\smallskip
-  }%
 }{
   % Draw everything at the end
   \ifnum\thetimelineevent>0%
@@ -600,24 +551,94 @@
   \end{tikzpicture}
 }
 
-% adds accsupp for the icon as well
-\newcommand{\cvcert}[3]{%
-  \begin{tabularx}{\columnwidth}{@{}p{2em} @{\hspace{1ex}} >{\raggedright\arraybackslash}X@{}}
-    \multirow{2}{*}{\Large\color{accent}\BeginAccSupp{method=escape,ActualText={\detokenize{\nextCertificateMarker}: }}\nextCertificateMarker\EndAccSupp{}} & \bfseries\textcolor{emphasis}{#1} \\
-                                                                                                                                                        & \small{\href{#2}{#3}}
-  \end{tabularx}%
-  \smallskip
+% Starred version: Simple table-based timeline without graphics
+\newenvironment{nexttimeline*}{%
+  \setcounter{timelineevent}{0}
+  
+  % Calculate column widths to match the TikZ version alignment
+  \pgfmathsetmacro{\datecolwidth}{2.3}% Date column width in cm (same as TikZ version)
+  \pgfmathsetmacro{\eventcolwidth}{\linewidth/1cm - \datecolwidth - 0.5}% Remaining width for event column
+  
+  % Start the tabularray table
+  \begin{tblr}{
+    colspec = {X[\datecolwidth,r,m] X[\eventcolwidth,l,m]}, % Right-aligned dates, left-aligned events
+    rowsep = 0.8cm, % Vertical spacing between rows (matches eventspacing from TikZ version)
+    colsep = 1.3cm,  % Horizontal gap between columns (matches timelinegap + eventgap)
+    stretch = 0,     % Don't stretch the table
+    hlines = {},     % No horizontal lines
+    vlines = {}      % No vertical lines
+  }
+  
+  % Command to add timeline events (simplified for table format)
+  \newcommand{\nexttimelineevent}[2]{%
+    \stepcounter{timelineevent}%
+    % Add row separator if not the first event
+    \ifnum\thetimelineevent>1 \\ \fi
+    % Date/location cell (right-aligned) & Content cell (left-aligned)
+    {\color{emphasis}##1} & {##2}%
+  }
+}{
+  \end{tblr}
 }
 
-\newcommand{\cvachievement}[3]{%
-  \begin{tabularx}{\columnwidth}{@{}p{2em} @{\hspace{1ex}} >{\raggedright\arraybackslash}X@{}}
-    \multirow{2}{*}{\Large\color{accent}\BeginAccSupp{method=escape,ActualText={\detokenize{#1}: }}#1\EndAccSupp{}} & \bfseries\textcolor{emphasis}{#2} \\
-                                                                                                                    & #3
-  \end{tabularx}%
-  \smallskip
+\newcommand{\nextItemHeading}[1]{{\large\bfseries\color{heading}#1}\par}%
+\newcommand{\nextItemSubheading}[1]{{\normalsize\bfseries\color{subheading}#1}\par}%
+\newcommand{\nextTechstack}[1]{{\bfseries\color{emphasis}Tech Stack:~#1}\par}%
+
+% Project Reference Command
+% Parameters: 
+% - {string} #1 - Repository URL
+% - {string} [#2] - Deployment Location (optional)
+\NewDocumentCommand{\nextProjectRef}{m O{}}{%
+  \def\reponame{\directlua{tex.sprint(Utils.get_repository_name(#1))}}%
+  {
+    \normalfont
+    \textbf{Repository:}~{\BeginAccSupp{method=pdfstringdef,ActualText={\rolename:}}\nextProjectRoleMarker\EndAccSupp{}\reponame}%
+    \IfValueTF{#2}{%
+      ~\hfill~
+      \textbf{Deployment:}~{#2}%
+    }{}%
+    \par
+  }
 }
 
-\newcommand{\cvtag}[1]{%
+\ExplSyntaxOn
+% Simplified date handling using Lua Utils
+% Declare variables for date and location storage
+\tl_new:N \l_timelineevent_startdate_tl
+\tl_new:N \l_timelineevent_enddate_tl
+\tl_new:N \l_timelineevent_location_tl
+
+% Key-value interface for date and location in timeline events
+\keys_define:nn {timelineevent/dateandloc}
+  {
+    startdate .tl_set:N = \l_timelineevent_startdate_tl,
+    startdate .initial:n = {Present}, % Default to "Present"
+    enddate   .tl_set:N = \l_timelineevent_enddate_tl,
+    enddate   .initial:n = {Present}, % Default to "Present"
+    location  .tl_set:N = \l_timelineevent_location_tl,
+    location  .initial:n = {}         % Default to empty
+  }
+
+% Command to format date and location for timeline events
+% Usage: \nextDateAndLocation[<key=value pairs>]
+% Supported keys: startdate (yyyy-mm-dd or yyyy-mm), enddate (yyyy-mm-dd or yyyy-mm), location
+\NewDocumentCommand{\nextDateAndLocation}{ O{} }{%
+  \keys_set:nn {timelineevent/dateandloc} {#1}%
+  % Parse dates using Lua but handle formatting in LaTeX
+  \def\parsedstartdate{\directlua{tex.sprint(Utils.parse_date("\luaescapestring{\tl_use:N \l_timelineevent_startdate_tl}"))}}%
+  \def\parsedenddate{\directlua{tex.sprint(Utils.parse_date("\luaescapestring{\tl_use:N \l_timelineevent_enddate_tl}"))}}%
+  % Format using LaTeX (easier to debug)
+  \small{\parsedstartdate~--~\parsedenddate}%
+  \tl_if_empty:NF \l_timelineevent_location_tl {\\{\tl_use:N \l_timelineevent_location_tl}}%
+}
+\ExplSyntaxOff
+
+%% ============================================================================
+%% Additional Utility Commands
+%% ============================================================================
+
+\newcommand{\nextTag}[1]{%
   \tikz[baseline]\node[anchor=base,draw=body!30,rounded corners,inner xsep=1ex,inner ysep =0.75ex,text height=1.5ex,text depth=.25ex]{#1};
 }
 

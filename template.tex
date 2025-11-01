@@ -109,8 +109,9 @@
 
 \begin{nextsection}{Experience}[\nextSVGIcon{email}]
     \begin{nexttimeline}
-        \nexttimelineevent{\DateAndLocation{June 2010}{New York, NY}}{
-            \ExperienceHeading{Software Engineer}{Tech Solutions Inc.}
+        \nexttimelineevent{\nextDateAndLocation[startdate=2010-06-01, enddate=2014-05-31, location={New York, NY}]}{
+            \nextItemHeading{Software Engineer}
+            \nextItemSubheading{Tech Solutions Inc.}
             \begin{itemize}[leftmargin=*,topsep=2pt,itemsep=1pt]
                 \item Specialized in Software Engineering
                 \item GPA\@: 3.8/4.0
@@ -119,8 +120,9 @@
             \end{itemize}
         }
 
-        \nexttimelineevent{\DateAndLocation{May 2014}{Boston, MA}}{
-            \ExperienceHeading{Research Assistant}{AI Lab}
+        \nexttimelineevent{\nextDateAndLocation[startdate=2014-05-01, enddate=2014-08-31, location={Boston, MA}]}{
+            \nextItemHeading{Research Assistant}
+            \nextItemSubheading{AI Lab}
             \begin{itemize}[leftmargin=*,topsep=2pt,itemsep=1pt]
                 \item Machine Learning research project
                 \item Published 2 conference papers
@@ -134,9 +136,9 @@
 
 \begin{nextsection}{Projects}[\nextSVGIcon{email}]
     \begin{nexttimeline}
-        \nexttimelineevent{\DateAndLocation{June 2010}}{
-            \Heading{Name 1, Customer experience optimizer and sales management system}
-            {Your Role}{https://github.com/you/your-repository}
+        \nexttimelineevent{\nextDateAndLocation[startdate=2010-06-01, enddate=2010-12-31]}{
+            \nextItemHeading{Name 1 | Customer experience optimizer and sales management system}
+            \nextItemSubheading{Your Role}
             \begin{itemize}[leftmargin=*,topsep=2pt,itemsep=1pt]
                 \item Specialized in Software Engineering
                 \item GPA\@: 3.8/4.0
@@ -144,11 +146,10 @@
                 \item Relevant coursework: Algorithms, Data Structures
             \end{itemize}
             \smallskip
-            \textcolor{emphasis}{\textbf{Technologies: }}ASP.NET, Vue.js, Node.js, MS SQL
+            \nextTechstack{ASP.NET, Vue.js, Node.js, MS SQL}
         }
     \end{nexttimeline}
 \end{nextsection}
-
 
 % \cvsection{Education}
 
