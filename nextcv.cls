@@ -592,6 +592,19 @@
   \endgroup
 }
 
+
+\newenvironment{nextcertificates}{
+  \newcommand{\nextCertificate}[3]{%
+    \item \bfseries\textcolor{emphasis}{##1 | ##2} \\ \small{\href{##3}{##3}}
+  }%
+
+  \begin{nextsection}{Certificates}[\nextSVGIcon{email}]%
+    \begin{itemize}[leftmargin=*,topsep=2pt,itemsep=1pt]
+}{%
+    \end{itemize}%
+  \end{nextsection}%
+}
+
 \newcommand{\nextItemHeading}[1]{{\large\bfseries\color{heading}#1}\par}%
 \newcommand{\nextItemSubheading}[1]{{\normalsize\bfseries\color{subheading}#1}\par}%
 \newcommand{\nextTechstack}[1]{{\bfseries\color{emphasis}Technologies:~#1}\par}%
