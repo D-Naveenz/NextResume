@@ -265,5 +265,5 @@ TSWLatexianTemp*
 *.sta
 
 # Compliled PDF files
-*.pdf
+/*.pdf
 svg-inkscape/*.*
