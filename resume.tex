@@ -23,7 +23,7 @@
 \documentclass[10pt,a4paper,withhyper,fieldnames]{nextresume}
 
 % Change the page layout if you need to
-\geometry{left=1.25cm,right=1.25cm,top=1.5cm,bottom=1.5cm,columnsep=1.2cm}
+\geometry{margin=1.25cm,columnsep=1.2cm}
 
 % Change the colours if you want to
 \definecolor{SlateGrey}{HTML}{2E2E2E}
@@ -75,9 +75,10 @@
 
 \begin{nextskills}[2]
     \begin{skillsection}{Cloud Technologies}
-        \weightedskill{Azure}{4.5}
+        \weightedskill{Azure}{4}
         VM, DevOps, Cosmos DB
-        \weightedskill{GCP}{4}
+        \smallskip
+        \weightedskill{GCP}{2.5}
         BigQuery, Dataproc, Databrics
     \end{skillsection}
 
@@ -85,12 +86,8 @@
         C\#, Python, JavaScript/TypeScript, Lua
     \end{skillsection}
 
-    \begin{skillsection}{Frontend Technologies}
-        Vue.js, Angular, WinUI 3 (WinAppSDK), XAML, Bootstrap
-    \end{skillsection}
-
-    \begin{skillsection}{Backend \& APIs}
-        {}.NET Core, Entity Framework, Node.js, Express, REST, Apache Spark, Pandas
+    \begin{skillsection}{Frameworks \& APIs}
+        {}.NET Core, Entity Framework, WinUI 3 (WinAppSDK), Node.js, Vue.js, Angular, REST, Apache Spark, Pandas
     \end{skillsection}
 
     \begin{skillsection}{Databases \& Storage}
@@ -113,7 +110,6 @@
                 \item Optimized database architecture achieving 25\% faster query performance and enhanced data integrity
                 \item Enhanced POS360 API security with JWT authentication and integrated Firebase real-time messaging
             \end{itemize}
-            \smallskip
             \nextTechstack{C\# (ASP.Net), ADO.Net, MS SQL Server, Firebase, JWT, Swagger}
         }
 
@@ -125,16 +121,10 @@
                 \item Developed integrated add-on store with user profiles, increasing platform usage by 25\%
                 \item Built SQLite data processing engine with Entity Framework and modernized UI components
             \end{itemize}
-            \smallskip
             \nextTechstack{C\#, WinUI 3, XAML, Entity Framework, SQLite, Microsoft Community Toolkit}
         }
     \end{nexttimeline}
 \end{nextsection}
-
-
-%% use ONLY \newpage if you want to force a page break for
-%% ONLY the current column
-% \newpage
 
 
 \begin{nextsection}{Projects}[\nextProjectsMarker]
@@ -147,11 +137,15 @@
                 \item Built full-stack restaurant management system with AR menu visualization for 15+ establishments
                 \item Achieved 99.9\% system uptime, 40\% increased engagement, and 50\% faster order processing
             \end{itemize}
-            \smallskip
             \nextTechstack{C\# (ASP.Net), Unity, Blender, ARCore, Three.Js, WebGL, Vue.Js, MS SQL Server}
         }
     \end{nexttimeline*}
 \end{nextsection}
+
+
+%% use ONLY \newpage if you want to force a page break for
+%% ONLY the current column
+\newpage
 
 
 \begin{nextsection}{Open Source Contributions}[\nextProjectsMarker]
@@ -163,7 +157,6 @@
                 \item Architected multi-module C\# library reducing development time for .NET applications by 40\%
                 \item Developed cross-platform storage library and specialized generic host layer for WinUI/console apps
             \end{itemize}
-            \smallskip
             \nextTechstack{C\# (.NET 9), Microsoft Generic Host, NuGet, Async/Await Patterns}
         }
 
@@ -174,7 +167,6 @@
                 \item Created ATS-friendly LaTeX resume class with Lua-powered dynamic content generation
                 \item Designed modular architecture with SVG icons and professional typography systems
             \end{itemize}
-            \smallskip
             \nextTechstack{\LaTeX, Lua, TikZ, PowerShell Automation}
         }
     \end{nexttimeline*}
