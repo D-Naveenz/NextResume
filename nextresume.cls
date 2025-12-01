@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%
-%% NextResume - v2.0.0 - Naveen Dharmathunga (dasheenaveen@outlook.com)
+%% NextResume - v2.1.0 - Naveen Dharmathunga (dasheenaveen@outlook.com)
 %% ================================================================================
 %% It may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, either version 1.3
