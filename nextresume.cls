@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%
-%% NextResume - v2.0.0 - Naveen Dharmathunga (dasheenaveen@outlook.com)
+%% NextResume - v2.1.0 - Naveen Dharmathunga (dasheenaveen@outlook.com)
 %% ================================================================================
 %% It may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, either version 1.3
@@ -139,7 +139,7 @@
 \newcommand{\next@style@name}[1]{{\huge\bfseries\color{name}\MakeUppercase{#1}}}
 \newcommand{\next@style@tagline}[1]{{\large\itshape\color{tagline}#1}}
 \newcommand{\next@style@info}[1]{{\footnotesize\bfseries#1}}
-\newcommand{\next@style@heading}[1]{{\headerfont\Large\bfseries\color{heading}#1}}
+\newcommand{\next@style@heading}[1]{{\headerfont\large\bfseries\color{heading}#1}}
 \newcommand{\next@style@timelinedate}{\footnotesize\color{emphasis}}
 
 % Configure itemize marker (enumitem already loaded above)
@@ -162,29 +162,35 @@
 \newcommand{\nextItemMarker}{{\small\textbullet}}
 
 % SVG-based markers
-\def\nextProfileMarker{\nextSVGIcon{person}[1.5em]}%
-\def\nextSkillMarker{\nextSVGIcon{settings}[1.5em]}%
-\def\nextExperienceMarker{\nextSVGIcon{briefcase}[1.5em]}%
-\def\nextProjectsMarker{\nextSVGIcon{code}[1.5em]}%
-\def\nextEducationMarker{\nextSVGIcon{college}[1.5em]}%
-\def\nextVolunteeringMarker{\nextSVGIcon{heart}[1.5em]}%
-\def\nextCertificatesMarker{\nextSVGIcon{tick}[1.5em]}%
-\def\nextStrengthsMarker{\nextSVGIcon{star}[1.5em]}%
+\def\nextProfileMarker{\nextSVGIcon{person}[1.3em]}%
+\def\nextSkillMarker{\nextSVGIcon{settings}[1.3em]}%
+\def\nextExperienceMarker{\nextSVGIcon{briefcase}[1.3em]}%
+\def\nextProjectsMarker{\nextSVGIcon{code}[1.3em]}%
+\def\nextEducationMarker{\nextSVGIcon{college}[1.3em]}%
+\def\nextVolunteeringMarker{\nextSVGIcon{heart}[1.3em]}%
+\def\nextCertificatesMarker{\nextSVGIcon{tick}[1.3em]}%
+\def\nextStrengthsMarker{\nextSVGIcon{star}[1.3em]}%
 \def\nextProjectLinkMarker{\nextSVGIcon{github}[1em]}%
 
 %% ============= Personal Info Data Structure (Lua Implementation) =============
-
-% Define boolean values for Lua
-\newcommand{\resume@hidefieldnamesvalue}{\bool_if:NT \g_fieldnames_bool { false } \bool_if:NF \g_fieldnames_bool { true }} % Inverted logic for fieldnames option
-\newcommand{\resume@withhypervalue}{\bool_if:NT \g_withhyper_bool { true } \bool_if:NF \g_withhyper_bool { false }}
-
 \begin{luacode*}
-  -- Create a new TokenGrid instance for personal info
-  -- Convert string boolean values to actual Lua booleans
-  local hideFieldNames = "\resume@hidefieldnamesvalue" == "true"
-  local withhyper = "\resume@withhypervalue" == "true"
+  -- Get boolean values with error handling
+  local success_fieldnames, fieldnames_result = pcall(Utils.get_latex3_boolean, "g_fieldnames_bool")
+  local success_withhyper, withhyper_result = pcall(Utils.get_latex3_boolean, "g_withhyper_bool")
+  
+  -- Handle results with defaults
+  local fieldnames_enabled = success_fieldnames and fieldnames_result or false -- fieldnames option shows names
+  local withhyper = success_withhyper and withhyper_result or false
+  
+  -- TokenGrid expects hideFieldNames as first parameter, so we invert fieldnames_enabled
+  local hideFieldNames = not fieldnames_enabled
+  
+  texio.write_nl("DEBUG: fieldnames_enabled=" .. tostring(fieldnames_enabled) .. " hideFieldNames=" .. tostring(hideFieldNames) .. " withhyper=" .. tostring(withhyper))
+  
+  -- Create TokenGrid: first param is hideFieldNames, second is withhyper
   next_personal_info = TokenGrid:new(hideFieldNames, withhyper)
 \end{luacode*}
+
 
 % Define new personal information fields with icons and optional hyperlinks
 % Usage:
@@ -245,10 +251,8 @@
   \hypersetup{
     pdfauthor={#1},
     pdftitle={Resume~-~#1},
-    pdfsubject={Resume~of~#1~-~#2},
-    pdfkeywords={Resume,~Curriculum~Vitae,~CV,~#1,~#2},
-    pdfcreator={NextResume~v2.0.0},
-    pdfproducer={LaTeX~with~NextResume~class}
+    pdfsubject={Resume~of~#1~-~#2,~Created~using~NextResume~LaTeX~Template},
+    pdfkeywords={Resume,~Curriculum~Vitae,~CV,~#1,~#2,~NextResume,~LaTeX,~LuaLaTeX}
   }
 }
 
@@ -314,7 +318,6 @@
     \medskip
     {\next@style@info{\resume@info@printfields{#1}}\par}
   \end{minipage}\par
-  \vspace{6pt}
   \endgroup
 }
 
@@ -324,7 +327,7 @@
 
 % The default section environment with optional icon
 \NewDocumentEnvironment{nextsection}{m O{}}{%
-  \par\vspace{1.5\baselineskip}\noindent % Add vertical space
+  \par\vspace{\baselineskip}\noindent % Add vertical space
   % Add the section title in a table to align with the icon if provided
   \IfValueTF{#2}{%
     \raisebox{-0.15\height}{#2} \hspace{0.4em} \next@style@heading{#1}
@@ -345,6 +348,7 @@
 % Resume Skills Environment. Use \columnbreak to break columns manually.
 % Parameters: [number of columns (default 1)]
 \NewDocumentEnvironment{nextskills}{ O{1} }{%
+  % [Obsolete]
   % Parameters: #1 = rating value (0-5, supports 0.5 increments)
   \NewDocumentCommand{\nextRatingBox}{m}{%
     \BeginAccSupp{method=plain,ActualText={##1}}%
@@ -389,6 +393,7 @@
     \EndAccSupp{}%
   }
 
+  % [Obsolete]
   % Add a skill with weighted rating
   % Use accsupp so that the actual numeric value is copied/pasted and also support 0.5, 1.5, 2.5, 3.5, 4.5
   % Parameters: <skill name> <rating out of 5>
@@ -397,7 +402,7 @@
     \def\rating{\nextRatingBox{##2}}%
 
     \noindent\skillname\hfill\rating%
-    \par\vspace{1ex}%
+    \par%
   }
 
   %\hspace{1em}% Add space between markers (adjust the value as needed)
@@ -460,11 +465,11 @@
   \def\lastbottom{0}% Initialize bottom position tracker
   
   % Calculate dynamic widths based on available space
-  \pgfmathsetmacro{\datewidth}{2.8}% Date column width in cm
+  \pgfmathsetmacro{\datewidth}{2.7}% Date column width in cm
   \pgfmathsetmacro{\timelinegap}{0.5}% Gap from center to date (left side)
-  \pgfmathsetmacro{\eventgap}{0.8}% Gap from center to event (right side)  
+  \pgfmathsetmacro{\eventgap}{0.5}% Gap from center to event (right side)  
   \pgfmathsetmacro{\timelinethickness}{0.1}% Timeline thickness in cm
-  \pgfmathsetmacro{\eventpadding}{0.3}% Internal padding for event box
+  \pgfmathsetmacro{\eventpadding}{0.2}% Internal padding for event box
   \pgfmathsetmacro{\safemargin}{0.2}% Safety margin to prevent overfull boxes
   
   % Calculate available width for event box
@@ -472,8 +477,8 @@
   \pgfmathsetmacro{\availablewidth}{\linewidth/1cm - \datewidth - \timelinegap - \eventgap - \timelinethickness - 2*\eventpadding - \safemargin}
   \pgfmathsetmacro{\eventtextwidth}{\availablewidth - 0.4}% Subtract for borders
 
-  \pgfmathsetmacro{\eventspacing}{0.6}% Spacing between events in cm
-  \pgfmathsetmacro{\timelinepadding}{0.4}% Vertical padding above/below timeline
+  \pgfmathsetmacro{\eventspacing}{0.4}% Spacing between events in cm
+  \pgfmathsetmacro{\timelinepadding}{0.2}% Vertical padding above/below timeline
   
   % Declare layers before starting tikzpicture
   \pgfdeclarelayer{background}% For timeline
@@ -534,7 +539,7 @@
     \node[date, anchor=north east] (date\thetimelineevent) at ($(pos\thetimelineevent) + (-\timelinegap,0)$) {##1};
     
     % Content node (right side) - use calculated gap
-    \node[event, anchor=north west] (event\thetimelineevent) at ($(pos\thetimelineevent) + (\eventgap,0) + (0,0.2cm)$) {##2};
+    \node[event, anchor=north west] (event\thetimelineevent) at ($(pos\thetimelineevent) + (\eventgap,0) + (0,0.15cm)$) {##2};
     
     % Draw circles on the circles layer
     \begin{pgfonlayer}{circles}
@@ -596,10 +601,10 @@
     }
     {\next@style@timelinedate ##1} & {##2} \\
     \end{tabular}%
-    \par\vspace{1em}%
+    \par\vspace{0.5ex}%
   }%
 }{
-  \vspace{-1em}% Remove the last vspace from the final timeline event
+  \vspace{-0.5ex}% Remove the last vspace from the final timeline event
   \endgroup%
 }
 
@@ -618,7 +623,7 @@
   %
   % Example: \nextCertificate{AWS Certified Solutions Architect}{Amazon Web Services}{https://aws.amazon.com/certification/}
   \newcommand{\nextCertificate}[3]{%
-    \item \bfseries\textcolor{emphasis}{##1 | ##2} \\ \small{\href{##3}{##3}}
+    \item \bfseries\textcolor{emphasis}{##1 | ##2} \\ \normalfont\small{\href{##3}{##3}}
   }%
 
   \begin{nextsection}{Certificates}[\nextCertificatesMarker]%

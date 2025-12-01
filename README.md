@@ -21,7 +21,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <h3 align="center">NextResume v2.0.0</h3>
+  <h3 align="center">NextResume v2.1.0</h3>
 
   <p align="center">
     A modern, ATS-friendly LaTeX resume class powered by Lua and cutting-edge LaTeX technologies.
@@ -95,18 +95,13 @@ NextResume isn't just another LaTeX template—it's a **complete typesetting eco
 
 > **Note:** The following pages showcase NextResume's comprehensive feature set with realistic professional content. This is a demonstration template highlighting all available capabilities - your actual resume will be customized with your own information and can be as concise as needed.
 
-<div align="center">
-  
-**Page 1 - Profile & Core Information**
-<img src="pictures/template_page-0001.jpg" alt="NextResume Template Page 1" width="600"/>
-
-**Page 2 - Experience & Projects Timeline**  
-<img src="pictures/template_page-0002.jpg" alt="NextResume Template Page 2" width="600"/>
-
-**Page 3 - Education, Certifications & Skills**
-<img src="pictures/template_page-0003.jpg" alt="NextResume Template Page 3" width="600"/>
-
-</div>
+<table style="border: none; padding: 0;">
+  <tr>
+    <td style="border: none; padding: 0;"><img src="pictures/template_page-0001.jpg" alt="NextResume Template Page 1"/></td>
+    <td style="border: none; padding: 0;"><img src="pictures/template_page-0002.jpg" alt="NextResume Template Page 2"/></td>
+    <td style="border: none; padding: 0;"><img src="pictures/template_page-0003.jpg" alt="NextResume Template Page 3"/></td>
+  </tr>
+</table>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -169,8 +164,8 @@ Ever added a space in Microsoft Word and watched your entire document collapse? 
 
 **Option 1: Clone the Repository**
 ```bash
-git clone https://github.com/D-Naveenz/NextResume.git
-cd NextResume
+git clone https://github.com/D-Naveenz/nextresume-latex.git
+cd nextresume-latex
 ```
 
 **Option 2: Download Essential Files**
@@ -479,16 +474,16 @@ NextResume stands on the shoulders of giants in the LaTeX community:
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/D-Naveenz/NextCV.svg?style=for-the-badge
-[contributors-url]: https://github.com/D-Naveenz/NextCV/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/D-Naveenz/NextCV.svg?style=for-the-badge
-[forks-url]: https://github.com/D-Naveenz/NextCV/network/members
-[stars-shield]: https://img.shields.io/github/stars/D-Naveenz/NextCV.svg?style=for-the-badge
-[stars-url]: https://github.com/D-Naveenz/NextCV/stargazers
-[issues-shield]: https://img.shields.io/github/issues/D-Naveenz/NextCV.svg?style=for-the-badge
-[issues-url]: https://github.com/D-Naveenz/NextCV/issues
-[license-shield]: https://img.shields.io/github/license/D-Naveenz/NextCV.svg?style=for-the-badge
-[license-url]: https://github.com/D-Naveenz/NextCV/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/D-Naveenz/nextresume-latex.svg?style=for-the-badge
+[contributors-url]: https://github.com/D-Naveenz/nextresume-latex/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/D-Naveenz/nextresume-latex.svg?style=for-the-badge
+[forks-url]: https://github.com/D-Naveenz/nextresume-latex/network/members
+[stars-shield]: https://img.shields.io/github/stars/D-Naveenz/nextresume-latex.svg?style=for-the-badge
+[stars-url]: https://github.com/D-Naveenz/nextresume-latex/stargazers
+[issues-shield]: https://img.shields.io/github/issues/D-Naveenz/nextresume-latex.svg?style=for-the-badge
+[issues-url]: https://github.com/D-Naveenz/nextresume-latex/issues
+[license-shield]: https://img.shields.io/github/license/D-Naveenz/nextresume-latex.svg?style=for-the-badge
+[license-url]: https://github.com/D-Naveenz/nextresume-latex/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/dasheewd/
 [latex-shield]: https://img.shields.io/badge/latex-%23008080.svg?style=for-the-badge&logo=latex&logoColor=white
