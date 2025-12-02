@@ -266,4 +266,4 @@ TSWLatexianTemp*
 
 # Compliled PDF files
 /*.pdf
-svg-inkscape/*.*
+src/svg-inkscape/*.*

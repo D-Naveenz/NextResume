@@ -97,9 +97,9 @@ NextResume isn't just another LaTeX template—it's a **complete typesetting eco
 
 <table style="border: none; padding: 0;">
   <tr>
-    <td style="border: none; padding: 0;"><img src="pictures/template_page-0001.jpg" alt="NextResume Template Page 1"/></td>
-    <td style="border: none; padding: 0;"><img src="pictures/template_page-0002.jpg" alt="NextResume Template Page 2"/></td>
-    <td style="border: none; padding: 0;"><img src="pictures/template_page-0003.jpg" alt="NextResume Template Page 3"/></td>
+    <td style="border: none; padding: 0;"><img src="preview/template_page-0001.jpg" alt="NextResume Template Page 1"/></td>
+    <td style="border: none; padding: 0;"><img src="preview/template_page-0002.jpg" alt="NextResume Template Page 2"/></td>
+    <td style="border: none; padding: 0;"><img src="preview/template_page-0003.jpg" alt="NextResume Template Page 3"/></td>
   </tr>
 </table>
 

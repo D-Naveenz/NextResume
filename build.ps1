@@ -1,9 +1,9 @@
-# Build script for NextCV LaTeX template
+# Build script for NextResume LaTeX template
 # Usage: .\build.ps1 [filename]
 # If no filename is provided, defaults to template.tex
 
 param(
-    [string]$InputFile = "resume.tex"
+    [string]$InputFile = "template.tex"
 )
 
 Write-Host "Building LaTeX document: $InputFile" -ForegroundColor Green
@@ -11,9 +11,13 @@ Write-Host "Building LaTeX document: $InputFile" -ForegroundColor Green
 # Ensure MiKTeX is in PATH
 $env:PATH = "C:\Users\dashe\AppData\Local\Programs\MiKTeX\miktex\bin\x64;" + $env:PATH
 
+# Change to src directory
+Set-Location -Path "$PSScriptRoot\src"
+
 # Check if input file exists
 if (-not (Test-Path $InputFile)) {
     Write-Error "File '$InputFile' not found!"
+    Set-Location -Path $PSScriptRoot
     exit 1
 }
 
@@ -41,10 +45,12 @@ if ($LASTEXITCODE -eq 0) {
             Start-Process "$baseName.pdf"
         }
     }
+    Set-Location -Path $PSScriptRoot
 } else {
     Write-Host "Compilation failed. Check the log file for details." -ForegroundColor Red
     if (Test-Path "$baseName.log") {
         Write-Host "Log file: $baseName.log" -ForegroundColor Yellow
     }
+    Set-Location -Path $PSScriptRoot
     exit $LASTEXITCODE
 }

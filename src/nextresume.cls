@@ -58,7 +58,7 @@
 \ExplSyntaxOff
 
 \RequirePackage{hyperref}      % Hyperlinks and PDF features
-\RequirePackage{hyperxmp}      % XMP metadata support
+%\RequirePackage{hyperxmp}      % XMP metadata support - disabled due to font embedding issues
 
 %% 5. GRAPHICS AND COLOR PACKAGES
 \RequirePackage{xcolor}        % Color definitions (must load before tikz)
@@ -106,7 +106,7 @@
 
 % Set Aptos as the main font for the Next Resume theme
 \setmainfont{Aptos}[
-  Path           =./fonts/Aptos/,
+  Path           =./res/fonts/Aptos/,
   Extension      =.ttf,
   UprightFont    =*,
   ItalicFont     =*-Italic,
@@ -116,12 +116,13 @@
 
 % Define Montserrat as header font family
 \newfontfamily\headerfont{Montserrat}[
-  Path           =./fonts/Montserrat/static/,
+  Path           =./res/fonts/Montserrat/static/,
   Extension      =.ttf,
   UprightFont    =*-Regular,
   ItalicFont     =*-Italic,
   BoldFont       =*-Bold,
   BoldItalicFont =*-BoldItalic,
+  Renderer       =Harfbuzz,
 ]
 
 % Define the default color scheme
@@ -153,7 +154,7 @@
 % Example: \nextSVGIcon{email}[1.5em]
 \NewDocumentCommand{\nextSVGIcon}{m O{1.2em}}{%
   \begingroup%
-  \def\@TexIconPath{./icons/#1.svg}%
+  \def\@TexIconPath{./res/icons/#1.svg}%
   \includesvg[height=#2]{\@TexIconPath}
   \endgroup%
 }
